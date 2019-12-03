@@ -1,4 +1,4 @@
-package com.fengwuxp.share.reactnative;
+package com.fengwuxp.reactnative.mob;
 
 import android.content.Context;
 import android.util.Log;

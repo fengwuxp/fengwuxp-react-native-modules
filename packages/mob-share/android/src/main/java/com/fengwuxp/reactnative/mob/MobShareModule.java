@@ -1,4 +1,4 @@
-package com.fengwuxp.share.reactnative;
+package com.fengwuxp.reactnative.mob;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -11,7 +11,7 @@ import com.mob.MobSDK;
 
 import java.util.Map;
 
-import static com.fengwuxp.share.reactnative.ShareHelper.ERROR;
+import static com.fengwuxp.reactnative.mob.ShareHelper.ERROR;
 
 /**
  * mob share module

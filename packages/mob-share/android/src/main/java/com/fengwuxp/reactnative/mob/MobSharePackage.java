@@ -1,4 +1,4 @@
-package com.fengwuxp.share.reactnative;
+package com.fengwuxp.reactnative.mob;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.JavaScriptModule;

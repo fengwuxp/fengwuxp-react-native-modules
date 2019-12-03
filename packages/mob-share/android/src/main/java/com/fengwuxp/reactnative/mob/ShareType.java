@@ -1,4 +1,4 @@
-package com.fengwuxp.share.reactnative;
+package com.fengwuxp.reactnative.mob;
 
 /**
  * 分享类型
