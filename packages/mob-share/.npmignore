@@ -1,0 +1,21 @@
+# Created by .ignore support plugin (hsz.mobi)
+.awcache
+node_modules
+tsconfig.test.json
+tsconfig.lib.json
+tsconfig.json
+jest.config.js
+test
+babel.config.js
+rollup.config.js
+gen
+android/.gradle
+android/.idea
+android/build
+android/gradle
+android/android.iml
+android/gradlew
+android/gradlew.bat
+android/local.properties
+
+

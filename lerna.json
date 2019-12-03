@@ -1,0 +1,16 @@
+{
+  "packages": [
+    "packages/*"
+  ],
+  "version": "1.0.0",
+  "npmClient": "npm",
+  "command": {
+    "publish": {
+      "skipGit": false,
+      "allowBranch": "master",
+      "ignoreChanges": [
+        "templates/*"
+      ]
+    }
+  }
+}

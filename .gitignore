@@ -1,0 +1,28 @@
+# Created by .ignore support plugin (hsz.mobi)
+node_modules
+.idea
+.gradle
+*.iml
+lib
+es
+.temp
+genode
+build
+*.propertiesgit remote add origin https://github.com/fengwuxp/fengwuxp-react-native-modules.git
+*-lock.json
+yarn.lock
+*.log
+*-debug.log
+*-error.log
+dist
+dist_web
+coverage
+*.tgz
+_src
+.spring
+.awcache
+lib
+es
+browser
+types/index.d.ts
+
