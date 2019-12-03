@@ -19,7 +19,9 @@
   "files": [
     "dist",
     "es",
-    "types"
+    "types",
+    "android",
+    "ios"
   ],
   "author": "lovebing",
   "license": "MIT",

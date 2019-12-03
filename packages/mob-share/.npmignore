@@ -9,13 +9,13 @@ test
 babel.config.js
 rollup.config.js
 gen
-android/.gradle
+#android/.gradle
+#android/gradle
+#android/gradlew
+#android/gradlew.bat
 android/.idea
 android/build
-android/gradle
 android/android.iml
-android/gradlew
-android/gradlew.bat
 android/local.properties
 
 
