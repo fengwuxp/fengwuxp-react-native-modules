@@ -3,12 +3,9 @@ package com.fengwuxp.reactnative.mob;
 import android.content.Context;
 import android.util.Log;
 
-import com.facebook.react.bridge.Promise;
-
-import java.util.HashMap;
+import java.text.MessageFormat;
 import java.util.Map;
 
-import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.PlatformActionListener;
 import cn.sharesdk.onekeyshare.OnekeyShare;
 import cn.sharesdk.sina.weibo.SinaWeibo;
@@ -33,11 +30,6 @@ public class ShareHelper {
 
     private static ShareHelper SIMPLE_HELPER;
 
-//    static final String SUCCESS = "0";
-
-    static final String ERROR = "-1";
-
-    static final String CANCEL = "1";
 
     private ShareHelper() {
     }
@@ -49,7 +41,9 @@ public class ShareHelper {
         return SIMPLE_HELPER;
     }
 
-    public void shareToSignPlatform(Context context, String platform, Map<String, Object> params, Promise promise) {
+    public void shareToSignPlatform(Context context, String platform, Map<String, Object> params, PlatformActionListener listener) {
+
+
         try {
 
             Log.i(getClass().getSimpleName(), "share " + platform + "," + params);
@@ -75,39 +69,13 @@ public class ShareHelper {
             else if (ShareType.TENCENT_WEB_BO.name().equalsIgnoreCase(platform))
                 oks = toTencentWeibo(params);
             else {
-                if (promise != null) {
-                    promise.reject(ERROR, "不支持的分享平台");
-                }
+                listener.onError(null, -1, new RuntimeException(MessageFormat.format("not support platform :{0}", platform)));
                 return;
             }
-            oks.setCallback(new PlatformActionListener() {
-                @Override
-                public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap) {
-                    if (promise != null) {
-                        promise.resolve("分享成功");
-                    }
-                }
-
-                @Override
-                public void onError(Platform platform, int i, Throwable throwable) {
-                    if (promise != null) {
-                        promise.reject(ERROR, "分享失败");
-                    }
-                }
-
-                @Override
-                public void onCancel(Platform platform, int i) {
-                    if (promise != null) {
-                        promise.reject(CANCEL, "取消分享");
-                    }
-                }
-            });
+            oks.setCallback(listener);
             oks.show(context);
         } catch (Exception e) {
             e.printStackTrace();
-            if (promise != null) {
-                promise.reject(ERROR, "分享失败");
-            }
         }
     }
 
@@ -302,4 +270,6 @@ public class ShareHelper {
 
         return oks;
     }
+
+
 }

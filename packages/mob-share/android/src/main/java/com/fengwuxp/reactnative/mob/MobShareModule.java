@@ -7,11 +7,18 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableMap;
 import com.mob.MobSDK;
 
+import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 
-import static com.fengwuxp.reactnative.mob.ShareHelper.ERROR;
+import cn.sharesdk.framework.Platform;
+import cn.sharesdk.framework.PlatformActionListener;
+
 
 /**
  * mob share module
@@ -49,15 +56,44 @@ public class MobShareModule extends ReactContextBaseJavaModule {
      * @param promise
      */
     @ReactMethod
-    public void shareSignPlatform(String platform, Map<String, Object> params, Promise promise) {
+    public void shareSignPlatform(String platform, ReadableMap params, Promise promise) {
+        this.checkCalled(promise);
         if (TextUtils.isEmpty(platform)) {
-            promise.reject(ERROR, "未指定分享平台");
-        } else if (params == null || params.isEmpty()) {
-            promise.reject(ERROR, "未指定分享内容");
-        } else {
-            ShareHelper.getInstance().shareToSignPlatform(mContext, platform, params, promise);
+            promise.reject(ShareResultStatus.FAILURE.name(), "未指定分享平台");
+        } else if (params == null || !params.getEntryIterator().hasNext()) {
+            promise.reject(ShareResultStatus.FAILURE.name(), "未指定分享内容");
         }
+
+        // 复制参数
+        HashMap<String, Object> map = new HashMap<>();
+        Iterator<Map.Entry<String, Object>> entryIterator = Objects.requireNonNull(params).getEntryIterator();
+        while (entryIterator.hasNext()) {
+            Map.Entry<String, Object> next = entryIterator.next();
+            map.put(next.getKey(), next.getValue());
+        }
+
+        ShareHelper.getInstance().shareToSignPlatform(mContext, platform, map, new PlatformActionListener() {
+            @Override
+            public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap) {
+                promise.resolve(ShareResultStatus.SUCCESS.name());
+            }
+
+            @Override
+            public void onError(Platform platform, int code, Throwable throwable) {
+                promise.reject(ShareResultStatus.FAILURE.name(), MessageFormat.format("分享失败,error code: {0}", code));
+            }
+
+            @Override
+            public void onCancel(Platform platform, int i) {
+                promise.reject(ShareResultStatus.CANCEL.name(), "取消分享");
+            }
+        });
     }
 
+    private void checkCalled(Promise promise) {
+        if (promise == null) {
+            throw new RuntimeException("Must be called using a promise");
+        }
+    }
 
 }

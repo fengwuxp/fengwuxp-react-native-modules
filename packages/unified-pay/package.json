@@ -1,7 +1,7 @@
 {
-  "name": "fengwuxp-react-native-mob-share",
+  "name": "fengwuxp-react-native-pay",
   "version": "1.0.0",
-  "description": "react native mob share SDK",
+  "description": "react native pay SDK",
   "publishConfig": {
     "registry": "http://nexus.oaknt.com:18081/repository/oak_npm_hosted/"
   },

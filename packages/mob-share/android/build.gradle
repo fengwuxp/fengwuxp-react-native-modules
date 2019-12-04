@@ -3,7 +3,7 @@ def safeExtGet(prop, fallback) {
 }
 
 apply plugin: 'com.android.library'
-apply plugin: 'maven'
+//apply plugin: 'maven'
 apply plugin: 'com.mob.sdk'
 
 //group = "com.fengwuxp.reactnative.mob"
@@ -11,6 +11,9 @@ apply plugin: 'com.mob.sdk'
 
 buildscript {
     repositories {
+        maven {
+            url "http://mvn.mob.com/android"
+        }
         mavenLocal()
         google()
         jcenter()
@@ -22,25 +25,6 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.2'
         classpath 'com.mob.sdk:MobSDK:+'
-    }
-}
-
-repositories {
-    maven {
-        url "http://mvn.mob.com/android"
-    }
-    mavenLocal()
-    google()
-    jcenter()
-    maven {
-        url 'http://repo.codeboot.net/maven/'
-    }
-    maven {
-        url "http://nexus.oaknt.com:18081/repository/maven-public/"
-        credentials {
-            username = "anonymous"
-            password = ""
-        }
     }
 }
 
@@ -67,9 +51,38 @@ android {
     }
 }
 
+def MOB_SDK_APP_KEY = safeExtGet('MOB_SDK_APP_KEY', "");
+def MOB_SDK_APP_SECRET = safeExtGet('MOB_SDK_APP_SECRET', "");
+
+// 新浪
+def SINA_WEI_BO_APP_KEY = safeExtGet('SINA_WEI_BO_APP_KEY', "");
+def SINA_WEI_BO_APP_SECRET = safeExtGet('SINA_WEI_BO_APP_SECRET', "");
+def SINA_WEI_BO_APP_CALLBACK_URL = safeExtGet('SINA_WEI_BO_APP_CALLBACK_URL', "http://www.sharesdk.cn");
+def SINA_WEI_BO_APP_SHARE_BY_APP_CLIENT = safeExtGet('SINA_WEI_BO_APP_SHARE_BY_APP_CLIENT', false);
+
+// 微信
+def WE_CHAT_APP_ID = safeExtGet('WE_CHAT_APP_ID', "");
+def WE_CHAT_APP_SECRET = safeExtGet('WE_CHAT_APP_SECRET', "");
+
+// 微信朋友圈
+def WE_CHANT_MOMENTS_APP_ID = "wx4868b35061f87885"
+def WE_CHANT_MOMENTS_APP_SECRET = "64020361b8ec4c99936c0e3999a9f249"
+
+// 微信收藏 Favorite
+def WE_CHANT_FAVORITE_APP_ID = "wx4868b35061f87885"
+def WE_CHANT_FAVORITE_APP_SECRET = "64020361b8ec4c99936c0e3999a9f249"
+
+// QQ
+def QQ_APP_ID = safeExtGet('QQ_APP_ID', "");
+def QQ_APP_EKY = safeExtGet('QQ_APP_EKY', "");
+
+// QQ 空间
+def QQ_ZONE_APP_ID = safeExtGet('QQ_ZONE_APP_ID', "");
+def QQ_ZONE_APP_EKY = safeExtGet('QQ_ZONE_APP_EKY', "");
+
 MobSDK {
-//    appKey ""
-//    appSecret ""
+    appKey MOB_SDK_APP_KEY
+    appSecret MOB_SDK_APP_SECRET
 
     ShareSDK {
         //平台配置信息
@@ -78,22 +91,30 @@ MobSDK {
 
             }
             SinaWeibo {
-
+                appKey SINA_WEI_BO_APP_KEY
+                appSecret SINA_WEI_BO_APP_SECRET
+                callbackUri SINA_WEI_BO_APP_CALLBACK_URL
+                shareByAppClient SINA_WEI_BO_APP_SHARE_BY_APP_CLIENT
             }
             Wechat {
-
+                appId WE_CHAT_APP_ID
+                appSecret WE_CHAT_APP_SECRET
             }
             WechatFavorite {
-
+                appId WE_CHANT_FAVORITE_APP_ID
+                appSecret WE_CHANT_FAVORITE_APP_SECRET
             }
             WechatMoments {
-
+                appId WE_CHANT_MOMENTS_APP_ID
+                appSecret WE_CHANT_MOMENTS_APP_SECRET
             }
             QQ {
-
+                appId QQ_APP_ID
+                appKey QQ_APP_EKY
             }
             QZone {
-
+                appId QQ_ZONE_APP_ID
+                appKey QQ_ZONE_APP_EKY
             }
             TencentWeibo {
 

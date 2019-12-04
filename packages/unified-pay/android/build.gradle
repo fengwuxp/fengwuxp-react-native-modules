@@ -1,0 +1,69 @@
+def safeExtGet(prop, fallback) {
+    rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'maven'
+
+
+buildscript {
+    repositories {
+
+        mavenLocal()
+        google()
+        jcenter()
+        maven() {
+            url 'http://repo.codeboot.net/maven/'
+        }
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.5.2'
+    }
+}
+
+repositories {
+    mavenLocal()
+    google()
+    jcenter()
+    maven() {
+        url 'http://repo.codeboot.net/maven/'
+    }
+
+}
+
+android {
+    compileSdkVersion safeExtGet('compileSdkVersion', 28)
+    buildToolsVersion safeExtGet('buildToolsVersion', '28.0.3')
+
+    defaultConfig {
+        minSdkVersion safeExtGet('minSdkVersion', 19)
+        targetSdkVersion safeExtGet('targetSdkVersion', 28)
+        versionCode 1
+        versionName "${version}"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    api fileTree(include: ['*.jar'], dir: 'libs')
+    implementation files('libs/alipaySdk-15.6.5-20190718211159-noUtdid.aar')
+
+    implementation 'com.xgr.easypay:EasyPay:2.0.0'
+    // @link https://github.com/kingofglory/EasyPay  项目还需要在依赖这2个包
+    compileOnly 'com.xgr.easypay:wechatpay:2.0.0'
+    compileOnly 'com.xgr.easypay:alipay:2.0.0'
+
+    compileOnly 'com.facebook.react:react-native:+'
+}
+
