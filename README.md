@@ -1,2 +1,1 @@
-test
 #### react-native module
