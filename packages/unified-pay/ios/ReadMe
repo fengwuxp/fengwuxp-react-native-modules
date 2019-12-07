@@ -1,0 +1,16 @@
+iOS第三方集成
+需要添加相应文件到项目目录下，并在ios项目下的Podfile添加相应依赖包
+1、支付 
+ 目录Payment
+ -微信支付
+ （1）将以下文件加入工程：
+ AppDelegate+Payment.h	PaymentModule.h
+AppDelegate+Payment.m	PaymentModule.m
+ （2）并在iOS工程目录下的Podfile文件添加依赖
+  pod 'WechatOpenSDK', '~> 1.8.6' 
+ （3）保存文件后，在当前目录下执行命令 pod install
+ （4）查看官方文档 https://developers.weixin.qq.com/doc/oplatform/Mobile_App/Access_Guide/iOS.html
+配置URL scheme及LSApplicationQueriesSchemes
+ （5）打开AppDelegate.m 文件引入头文件
+ #import "AppDelegate+Payment.h"
+	
