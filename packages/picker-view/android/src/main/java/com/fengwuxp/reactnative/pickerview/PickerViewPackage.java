@@ -1,4 +1,4 @@
-package com.fengwuxp.reactnative.mob;
+package com.fengwuxp.reactnative.pickerview;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.JavaScriptModule;
@@ -10,11 +10,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class MobSharePackage implements ReactPackage {
+public class PickerViewPackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
-        modules.add(new MobShareModule(reactContext));
+        modules.add(new PickerViewModule(reactContext));
         return modules;
     }
 

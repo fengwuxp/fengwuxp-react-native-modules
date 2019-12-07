@@ -1,13 +1,19 @@
-import {SharePlatformType} from "./SharePlatformType";
+import {SocialType} from "./SocialType";
 
-export interface MobShareInterface {
+export interface MobSDKInterface {
 
     /**
-     *
+     * 授权
+     * @param platform
+     */
+    authorize: (platform: SocialType) => Promise<any>;
+
+    /**
+     * 分享
      * @param platform     分享的平台类型
      * @param shareParams  分享的参数
      */
-    shareSignPlatform: (platform: SharePlatformType, shareParams: ShareParams) => Promise<void>;
+    share: (platform: SocialType, shareParams: ShareParams) => Promise<void>;
 }
 
 

@@ -13,7 +13,7 @@ module.exports = {
     "plugins": [
         ["@babel/plugin-transform-runtime", {
             // 可选 false | 2 | 3,
-            "corejs": 3,
+            corejs: false,
             helpers: true,
             regenerator: true,
             useESModules: true

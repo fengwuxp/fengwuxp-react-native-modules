@@ -1,3 +1,4 @@
-export {default as MobShare} from "./MobShare";
-export {MobShareInterface, ShareParams} from "./MobShareSDK";
-export {SharePlatformType} from "./SharePlatformType";
+export {default as MobShareModule,MobShareModuleInterface} from "./MobShare";
+export {default as MobAuthenticateModule,MobAuthenticateInterface} from "./MobAuthenticate";
+export {MobSDKInterface, ShareParams} from "./MobShareSDK";
+export {SocialType} from "./SocialType";

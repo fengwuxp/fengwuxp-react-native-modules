@@ -80,6 +80,11 @@ def QQ_APP_EKY = safeExtGet('QQ_APP_EKY', "");
 def QQ_ZONE_APP_ID = safeExtGet('QQ_ZONE_APP_ID', "");
 def QQ_ZONE_APP_EKY = safeExtGet('QQ_ZONE_APP_EKY', "");
 
+// 支付宝
+def ALI_PAY_APP_ID = safeExtGet('ALI_PAY_APP_ID', "");
+def ALI_PAY_APP_KEY = safeExtGet('ALI_PAY_APP_KEY', "");
+def ALI_PAY_APP_SECRET = safeExtGet('ALI_PAY_APP_SECRET', "");
+
 MobSDK {
     appKey MOB_SDK_APP_KEY
     appSecret MOB_SDK_APP_SECRET
@@ -118,6 +123,11 @@ MobSDK {
             }
             TencentWeibo {
 
+            }
+            AliPay {
+                appId ALI_PAY_APP_ID
+                appKey ALI_PAY_APP_KEY
+                appSecret ALI_PAY_APP_SECRET
             }
             YouDao {
 
