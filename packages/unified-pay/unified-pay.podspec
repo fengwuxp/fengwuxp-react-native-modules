@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
   s.license      = "MIT"
   s.author       = { package["author"]["name"] => package["author"]["email"] }
   s.platforms    = { :ios => "9.0", :tvos => "9.0" }
-  s.source       = { :git => "git@github.com:fengwuxp/fengwuxp-react-native-modules.git", :tag => "#{s.version}" }
+  s.source       = { :git => "https://github.com/fengwuxp/fengwuxp-react-native-modules.git", :tag => "#{s.version}" }
   s.source_files = "packages/unified-pay/ios/**/*.{h,m}"
 
   s.ios.dependency 'WechatOpenSDK', '~> 1.8.6'
