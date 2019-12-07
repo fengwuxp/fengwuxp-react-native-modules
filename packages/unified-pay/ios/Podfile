@@ -1,7 +1,7 @@
 platform :ios, '9.0'
 # 支付
 #微信支付
-pod 'WechatOpenSDK', '~> 1.8.6' 
+#pod 'WechatOpenSDK', '~> 1.8.6' 
 
 # 分享主模块(必须)
 pod 'mob_sharesdk'
