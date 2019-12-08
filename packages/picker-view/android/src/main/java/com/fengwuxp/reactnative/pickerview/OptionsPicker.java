@@ -17,6 +17,7 @@ import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableType;
+import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
@@ -107,13 +108,13 @@ public class OptionsPicker {
                            ReadableArray options2Items,
                            ReadableArray options3Items) {
         if (options1Items != null) {
-            this.wv_option1 = options1Items.toArrayList();
+            this.wv_option1 = this.transformPickerArray(options1Items);
         }
         if (options2Items != null) {
-            this.wv_option2 = options2Items.toArrayList();
+            this.wv_option2 = this.transformPickerArray(options2Items);
         }
         if (options3Items != null) {
-            this.wv_option3 = options3Items.toArrayList();
+            this.wv_option3 = this.transformPickerArray(options3Items);
         }
 
         if (pickerView != null) {
@@ -144,8 +145,11 @@ public class OptionsPicker {
 
         Activity activity = reactApplicationContext.getCurrentActivity();
         OptionsPickerBuilder builder = new OptionsPickerBuilder(activity, (i1, i2, i3, view) -> {
-
-            promise.resolve(new int[]{i1, i2, i3});
+            WritableArray indexs = new WritableNativeArray();
+            indexs.pushInt(i1);
+            indexs.pushInt(i2);
+            indexs.pushInt(i3);
+            promise.resolve(indexs);
             pickerView.dismiss();
             pickerView = null;
         });
@@ -159,7 +163,7 @@ public class OptionsPicker {
         builder.setLabels(labels[0], labels[1], labels[2]);
         builder.setOptionsSelectChangeListener((i1, i2, i3) -> {
             Log.i(TAG, MessageFormat.format("{0}  {1}  {2}", i1, i2, i3));
-            WritableNativeArray indexs = new WritableNativeArray();
+            WritableArray indexs = new WritableNativeArray();
             indexs.pushInt(i1);
             indexs.pushInt(i2);
             indexs.pushInt(i3);
@@ -229,6 +233,9 @@ public class OptionsPicker {
 
         List<Object> list = new ArrayList<>();
         int size = readableArray.size();
+        if (size == 0) {
+            return list;
+        }
         boolean isMap = ReadableType.Map.equals(readableArray.getDynamic(0).getType());
 
         for (int i = 0; i < size; i++) {

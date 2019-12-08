@@ -63,5 +63,9 @@ export interface PickerViewAndroidSDK {
      */
     setPickerOptions: (options: CascadeOptionsData) => void;
 
-    setNPicker: (options: NCascadeOptionsData) => void;
+    /**
+     * 设置非级联数据
+     * @param options
+     */
+    setNPickerOptions: (options: NCascadeOptionsData) => void;
 }

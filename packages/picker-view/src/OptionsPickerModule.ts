@@ -70,9 +70,14 @@ export interface BaseOptionsPickerOptions {
 
     /**
      * 是否级联选择
-     * default true
+     * default false
      */
     isCascade?: boolean;
+
+    /**
+     * 使用非级联模式 模拟级联
+     */
+    // isMockCascade?: boolean;
 
     /**
      * 选择的列项
@@ -84,6 +89,10 @@ export interface BaseOptionsPickerOptions {
 
 const PickerView: PickerViewAndroidSDK = NativeModules.PickerView;
 
+let PickerData: { optionsData: any, selectedValues: number[] } = {
+    optionsData: null,
+    selectedValues: null
+};
 
 const OptionsPickerModule: OptionsPickerModuleInterface = {
 
@@ -97,10 +106,9 @@ const OptionsPickerModule: OptionsPickerModuleInterface = {
             onOptionsItemSelectChange,
             getOptionsPickerColumnItems,
             optionsColumns,
-            defaultSelectedValues
+            defaultSelectedValues,
         } = options;
 
-        isCascade = isCascade || true;
         const noneOptionsDate = optionsData == null;
         defaultSelectedValues = defaultSelectedValues || [];
         defaultSelectedValues = defaultSelectedValues.filter(item => item != null);
@@ -110,55 +118,55 @@ const OptionsPickerModule: OptionsPickerModuleInterface = {
         if (noneOptionsDate) {
             // 加载初始化数据
             if (isCascade) {
-                optionsData = await initCascadeOptionsData(optionsColumns, defaultSelectedValues, isSimplePickerItem, selectedValues, getOptionsPickerColumnItems);
+                PickerData.optionsData = await initCascadeOptionsData(optionsColumns, defaultSelectedValues, isSimplePickerItem, selectedValues, getOptionsPickerColumnItems);
             } else {
-                optionsData = await initOptions(optionsColumns, defaultSelectedValues, isSimplePickerItem, selectedValues, getOptionsPickerColumnItems);
+                PickerData.optionsData = await initOptions(optionsColumns, defaultSelectedValues, isSimplePickerItem, selectedValues, getOptionsPickerColumnItems);
             }
+        } else {
+            PickerData.optionsData = optionsData;
         }
 
-        console.log("--selectedValues-->", selectedValues);
+        // console.log("--selectedValues-->", selectedValues);
+        PickerData.selectedValues = selectedValues;
         // 设置默认选中
         PickerView.setSelectedOptions([...selectedValues]);
-
-        if (isCascade) {
-            PickerView.setPickerOptions(optionsData as CascadeOptionsData);
-        } else {
-            PickerView.setNPicker(optionsData as NCascadeOptionsData);
-
-        }
+        PickerView.setNPickerOptions([...PickerData.optionsData] as NCascadeOptionsData);
 
         // 选项发生改变的回调的wrapper
         const onOptionsItemSelectChangeCallbackWrapper = (indexs: number[]) => {
-            console.log("-----select change---->", indexs);
+            console.log("-----select change---->", indexs, PickerData.selectedValues);
             const changeColumnIndex = indexs.map((index, i) => {
-                const isChange = index === selectedValues[i];
+                const isChange = index !== PickerData.selectedValues[i];
                 if (isChange) {
-                    return index;
+                    return i;
                 } else {
                     return -1;
                 }
             }).find(index => index >= 0);
-            const selectedResult = getSelectedResult(indexs, isCascade, optionsData);
+            console.log("--changeColumnIndex-->", changeColumnIndex)
+            const selectedResult = getSelectedResult(indexs, isCascade, PickerData.optionsData);
             if (onOptionsItemSelectChange) {
-
                 onOptionsItemSelectChange(changeColumnIndex, selectedResult);
             }
+            PickerData.selectedValues = indexs;
             if (isCascade === false) {
                 return
             }
+            // console.log("----selectedResult--->", selectedResult);
             if (changeColumnIndex === 0) {
-                onCascadeFirstColumnChangeTryLoadData(selectedResult.values[indexs[0]], optionsData as any, indexs, getOptionsPickerColumnItems)
-            } else {
-                onCascadeSecondColumnChangeTryLoadData(selectedResult.values[indexs[1]], optionsData as any, indexs, getOptionsPickerColumnItems)
+                onCascadeFirstColumnChangeTryLoadData(selectedResult.values[0], indexs, getOptionsPickerColumnItems)
+            } else if (changeColumnIndex === 1) {
+                onCascadeSecondColumnChangeTryLoadData(selectedResult.values[1], indexs, getOptionsPickerColumnItems)
             }
         };
         registerOptionsSelectChangeHandlerListener(onOptionsItemSelectChangeCallbackWrapper);
 
         return new Promise((resolve, reject) => {
             PickerView.optionsPick(title, columnLabels, configs).then((indexs: number[]) => {
-                resolve(getSelectedResult(indexs, isCascade, optionsData))
+                resolve(getSelectedResult(indexs, isCascade, PickerData.optionsData))
             }).catch(reject).finally(() => {
                 removeOptionsSelectChangeHandlerListener(onOptionsItemSelectChangeCallbackWrapper);
+                PickerData.optionsData = null;
             });
         })
     }
@@ -172,31 +180,18 @@ const OptionsPickerModule: OptionsPickerModuleInterface = {
  */
 const getSelectedResult = (indexs: number[],
                            isCascade: boolean,
-                           optionsData: CascadeOptionsData | NCascadeOptionsData): OptionsSelectResult => {
+                           optionsData: NCascadeOptionsData): OptionsSelectResult => {
     const [i1, i2, i3] = indexs;
     const values: PickerItem[] = [];
     const [items1, items2, items3] = optionsData as any;
-    if (isCascade) {
+    if (items1) {
         values.push(items1[i1]);
-        if (items2) {
-            const items2Element = items2[i1] || [];
-            values.push(items2Element[i2]);
-        }
-        if (items3) {
-            let items3Element = items3[i1] || [];
-            let items3Element2 = items3Element[i2] || [];
-            values.push(items3Element2[i3])
-        }
-    } else {
-        if (items1) {
-            values.push(items1[i1]);
-        }
-        if (items2) {
-            values.push(items2[i2]);
-        }
-        if (items3) {
-            values.push(items3[i3]);
-        }
+    }
+    if (items2) {
+        values.push(items2[i2]);
+    }
+    if (items3) {
+        values.push(items3[i3]);
     }
     return {
         indexs,
@@ -212,7 +207,7 @@ const getSelectedResult = (indexs: number[],
  */
 const findSelectedIndex = (items: PickerItem[], isSimplePickerItem: boolean, defaultItem: PickerItem) => {
     if (defaultItem == null || items == null) {
-        return 0
+        return 0;
     }
     let index;
     if (isSimplePickerItem) {
@@ -220,7 +215,7 @@ const findSelectedIndex = (items: PickerItem[], isSimplePickerItem: boolean, def
     } else {
         index = items.findIndex((item: PickerItemObject) => item.value == (defaultItem as PickerItemObject).value);
     }
-    return index || 0;
+    return index < 0 ? 0 : index
 };
 
 /**
@@ -235,85 +230,59 @@ async function initCascadeOptionsData(optionsColumns: number,
                                       defaultSelectedValues: PickerItem[],
                                       isSimplePickerItem: boolean,
                                       selectIndexList: number[],
-                                      getOptionsPickerColumnItems: GetOptionsPickerColumnItemsFunction) {
-    const cascadeOptionsData: Array<PickerItem[]> = [];
+                                      getOptionsPickerColumnItems: GetOptionsPickerColumnItemsFunction): Promise<NCascadeOptionsData> {
+    let cascadeOptionsData: Array<PickerItem[]> = [];
     for (let i = 0; i < optionsColumns; i++) {
         let pickerItem = null;
         if (i > 0) {
-            pickerItem = cascadeOptionsData[i - 1][0] || pickerItem;
+            pickerItem = defaultSelectedValues[i - 1] || cascadeOptionsData[i - 1][0];
         }
         const items = await getOptionsPickerColumnItems(pickerItem, i);
-        selectIndexList.push(findSelectedIndex(items, isSimplePickerItem, pickerItem));
+        selectIndexList.push(findSelectedIndex(items, isSimplePickerItem, defaultSelectedValues[i] || pickerItem));
         cascadeOptionsData.push(items)
     }
-    return cascadeOptionsData.map((items, index) => {
-        if (index === 0) {
-            return items;
-        }
-        if (index === 1) {
-            return [
-                cascadeOptionsData[1]
-            ]
-        }
-        return [
-            [
-                cascadeOptionsData[2]
-            ]
-        ]
-    }).reduce((prev: Array<any>, item) => {
-        prev.push(item);
-        return prev;
-    }, []) as CascadeOptionsData;
+    return cascadeOptionsData as NCascadeOptionsData;
 }
 
 /**
  * 级联列表的第一列数据发生变化 , 尝试加载第二列的数据
  * @param prevItem
- * @param optionsData
  * @param indexList
  * @param getOptionsPickerColumnItems
  */
 const onCascadeFirstColumnChangeTryLoadData = (prevItem: PickerItem,
-                                               optionsData: CascadeOptionsData,
                                                indexList: number[],
                                                getOptionsPickerColumnItems: GetOptionsPickerColumnItemsFunction) => {
 
     const [i1] = indexList;
-    const items2 = optionsData[1][i1];
-    if (items2 != null) {
-        return
-    }
+
     getOptionsPickerColumnItems(prevItem, 1).then((items) => {
-        optionsData[1][i1] = items;
-        // 重新设置数据
-        PickerView.setSelectedOptions([i1, 0, 0]);
-        PickerView.setPickerOptions(optionsData);
+
+        PickerData.optionsData[1] = items;
+        //
+        // // 重新设置数据
+        // PickerView.setSelectedOptions([i1, 0, 0]);
+        // PickerView.setNPickerOptions([...PickerData.optionsData] as any);
+        onCascadeSecondColumnChangeTryLoadData(items[0], [i1, 0, 0], getOptionsPickerColumnItems);
     });
 };
 
 /**
  * 级联列表的第二列数据发生变化 , 尝试加载第二列的数据
  * @param prevItem
- * @param optionsData
  * @param indexList
  * @param getOptionsPickerColumnItems
  */
 const onCascadeSecondColumnChangeTryLoadData = (prevItem: PickerItem,
-                                                optionsData: CascadeOptionsData,
                                                 indexList: number[],
                                                 getOptionsPickerColumnItems: GetOptionsPickerColumnItemsFunction) => {
+
     const [i1, i2] = indexList;
-    const items3 = optionsData[2][i1] || [];
-    const items3_2 = items3[i2];
-    if (items3_2 != null) {
-        return
-    }
     getOptionsPickerColumnItems(prevItem, 2).then((items) => {
-        items3[i2] = items;
-        optionsData[2][i1] = items3;
+        PickerData.optionsData[2] = items;
         // 重新设置数据
         PickerView.setSelectedOptions([i1, i2, 0]);
-        PickerView.setPickerOptions(optionsData);
+        PickerView.setNPickerOptions([...PickerData.optionsData] as any);
     });
 };
 
