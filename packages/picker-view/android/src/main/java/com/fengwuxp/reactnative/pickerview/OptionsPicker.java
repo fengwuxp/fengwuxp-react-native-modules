@@ -139,7 +139,7 @@ public class OptionsPicker {
             title = DEFAULT_TITLE;
         }
         if (!hasTxt(labelOptions)) {
-            title = ",,,";
+            labelOptions = ",,,";
         }
 
         Activity activity = reactApplicationContext.getCurrentActivity();

@@ -1,6 +1,7 @@
 package com.fengwuxp.reactnative.pickerview;
 
 import com.contrarywind.interfaces.IPickerViewData;
+import com.facebook.react.bridge.Dynamic;
 import com.facebook.react.bridge.ReadableMap;
 
 import java.util.Objects;
@@ -13,16 +14,16 @@ public final class PickerItemObject implements IPickerViewData {
 
     private final String text;
 
-    private final String value;
+    private final Object value;
 
-    public PickerItemObject(String text, String value) {
+    public PickerItemObject(String text, Object value) {
         this.text = text;
         this.value = value;
     }
 
     public PickerItemObject(ReadableMap map) {
         this.text = map.getString("text");
-        this.value = map.getString("value");
+        this.value = map.getDynamic("value");
     }
 
     public String getText() {
@@ -33,7 +34,7 @@ public final class PickerItemObject implements IPickerViewData {
 //        this.text = text;
 //    }
 
-    public String getValue() {
+    public Object getValue() {
         return value;
     }
 

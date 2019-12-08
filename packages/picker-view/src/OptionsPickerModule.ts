@@ -18,6 +18,10 @@ export interface OptionsPickerModuleInterface {
 }
 
 
+type GetOptionsPickerColumnItemsFunction = (prevItem: PickerItem, currentColumnIndex: number) => Promise<PickerItem[]>;
+
+type OptionsItemSelectChangeCallbackFunction = (changeColumnIndex, result: OptionsSelectResult) => void;
+
 export interface BaseOptionsPickerOptions {
 
     /**
@@ -48,15 +52,15 @@ export interface BaseOptionsPickerOptions {
      * @param changeColumnIndex    当前变化的 column index  从0开始
      * @param result               选择结果
      */
-    onOptionsItemSelectChangeCallback?: (changeColumnIndex, result: OptionsSelectResult) => void,
+    onOptionsItemSelectChange?: OptionsItemSelectChangeCallbackFunction,
 
 
     /**
-     * 当列表滚动时 加载一列的数据
-     * @param changeColumnItem      滚动的列选中的数据
-     * @param changeColumnIndex    滚动的列索引  从0开始
+     * 获取选项列表列的数据
+     * @param prevItem               上一列选中的数据
+     * @param currentColumnIndex    column index  从0开始
      */
-    onOptionsChangeGetPickerItems: (changeColumnItem: PickerItem, changeColumnIndex: number) => Promise<PickerItem[]>;
+    getOptionsPickerColumnItems: GetOptionsPickerColumnItemsFunction;
 
 
     /**
@@ -90,8 +94,8 @@ const OptionsPickerModule: OptionsPickerModuleInterface = {
             title,
             configs,
             columnLabels,
-            onOptionsItemSelectChangeCallback,
-            onOptionsChangeGetPickerItems,
+            onOptionsItemSelectChange,
+            getOptionsPickerColumnItems,
             optionsColumns,
             defaultSelectedValues
         } = options;
@@ -106,9 +110,9 @@ const OptionsPickerModule: OptionsPickerModuleInterface = {
         if (noneOptionsDate) {
             // 加载初始化数据
             if (isCascade) {
-                optionsData = await initCascadeOptionsData(optionsColumns, defaultSelectedValues, isSimplePickerItem, selectedValues, onOptionsChangeGetPickerItems);
+                optionsData = await initCascadeOptionsData(optionsColumns, defaultSelectedValues, isSimplePickerItem, selectedValues, getOptionsPickerColumnItems);
             } else {
-                optionsData = await initOptions(optionsColumns, defaultSelectedValues, isSimplePickerItem, selectedValues, onOptionsChangeGetPickerItems);
+                optionsData = await initOptions(optionsColumns, defaultSelectedValues, isSimplePickerItem, selectedValues, getOptionsPickerColumnItems);
             }
         }
 
@@ -135,17 +139,17 @@ const OptionsPickerModule: OptionsPickerModuleInterface = {
                 }
             }).find(index => index >= 0);
             const selectedResult = getSelectedResult(indexs, isCascade, optionsData);
-            if (onOptionsItemSelectChangeCallback) {
+            if (onOptionsItemSelectChange) {
 
-                onOptionsItemSelectChangeCallback(changeColumnIndex, selectedResult);
+                onOptionsItemSelectChange(changeColumnIndex, selectedResult);
             }
             if (isCascade === false) {
                 return
             }
             if (changeColumnIndex === 0) {
-                onCascadeFirstColumnChangeTryLoadData(selectedResult.values[indexs[0]], optionsData as any, indexs, onOptionsChangeGetPickerItems)
+                onCascadeFirstColumnChangeTryLoadData(selectedResult.values[indexs[0]], optionsData as any, indexs, getOptionsPickerColumnItems)
             } else {
-                onCascadeSecondColumnChangeTryLoadData(selectedResult.values[indexs[1]], optionsData as any, indexs, onOptionsChangeGetPickerItems)
+                onCascadeSecondColumnChangeTryLoadData(selectedResult.values[indexs[1]], optionsData as any, indexs, getOptionsPickerColumnItems)
             }
         };
         registerOptionsSelectChangeHandlerListener(onOptionsItemSelectChangeCallbackWrapper);
@@ -207,11 +211,16 @@ const getSelectedResult = (indexs: number[],
  * @param defaultItem          默认选中的值
  */
 const findSelectedIndex = (items: PickerItem[], isSimplePickerItem: boolean, defaultItem: PickerItem) => {
-    if (isSimplePickerItem) {
-        return items.findIndex((item) => item === defaultItem);
-    } else {
-        return items.findIndex((item: PickerItemObject) => item.value == (defaultItem as PickerItemObject).value);
+    if (defaultItem == null || items == null) {
+        return 0
     }
+    let index;
+    if (isSimplePickerItem) {
+        index = items.findIndex((item) => item === defaultItem);
+    } else {
+        index = items.findIndex((item: PickerItemObject) => item.value == (defaultItem as PickerItemObject).value);
+    }
+    return index || 0;
 };
 
 /**
@@ -220,21 +229,21 @@ const findSelectedIndex = (items: PickerItem[], isSimplePickerItem: boolean, def
  * @param defaultSelectedValues
  * @param isSimplePickerItem
  * @param selectIndexList
- * @param onOptionsChangeGetPickerItems
+ * @param getOptionsPickerColumnItems
  */
 async function initCascadeOptionsData(optionsColumns: number,
                                       defaultSelectedValues: PickerItem[],
                                       isSimplePickerItem: boolean,
                                       selectIndexList: number[],
-                                      onOptionsChangeGetPickerItems: (prevItem: PickerItem, cellIndex: number) => Promise<PickerItem[]>) {
+                                      getOptionsPickerColumnItems: GetOptionsPickerColumnItemsFunction) {
     const cascadeOptionsData: Array<PickerItem[]> = [];
     for (let i = 0; i < optionsColumns; i++) {
-        let pickerItem = defaultSelectedValues[i];
+        let pickerItem = null;
         if (i > 0) {
             pickerItem = cascadeOptionsData[i - 1][0] || pickerItem;
         }
-        const items = await onOptionsChangeGetPickerItems(pickerItem, i);
-        selectIndexList.push(findSelectedIndex(items, isSimplePickerItem, pickerItem) || 0);
+        const items = await getOptionsPickerColumnItems(pickerItem, i);
+        selectIndexList.push(findSelectedIndex(items, isSimplePickerItem, pickerItem));
         cascadeOptionsData.push(items)
     }
     return cascadeOptionsData.map((items, index) => {
@@ -262,19 +271,19 @@ async function initCascadeOptionsData(optionsColumns: number,
  * @param prevItem
  * @param optionsData
  * @param indexList
- * @param onOptionsChangeGetPickerItems
+ * @param getOptionsPickerColumnItems
  */
 const onCascadeFirstColumnChangeTryLoadData = (prevItem: PickerItem,
                                                optionsData: CascadeOptionsData,
                                                indexList: number[],
-                                               onOptionsChangeGetPickerItems: (prevItem: PickerItem, cellIndex: number) => Promise<PickerItem[]>) => {
+                                               getOptionsPickerColumnItems: GetOptionsPickerColumnItemsFunction) => {
 
     const [i1] = indexList;
     const items2 = optionsData[1][i1];
     if (items2 != null) {
         return
     }
-    onOptionsChangeGetPickerItems(prevItem, 0).then((items) => {
+    getOptionsPickerColumnItems(prevItem, 1).then((items) => {
         optionsData[1][i1] = items;
         // 重新设置数据
         PickerView.setSelectedOptions([i1, 0, 0]);
@@ -287,19 +296,19 @@ const onCascadeFirstColumnChangeTryLoadData = (prevItem: PickerItem,
  * @param prevItem
  * @param optionsData
  * @param indexList
- * @param onOptionsChangeGetPickerItems
+ * @param getOptionsPickerColumnItems
  */
 const onCascadeSecondColumnChangeTryLoadData = (prevItem: PickerItem,
                                                 optionsData: CascadeOptionsData,
                                                 indexList: number[],
-                                                onOptionsChangeGetPickerItems: (prevItem: PickerItem, cellIndex: number) => Promise<PickerItem[]>) => {
+                                                getOptionsPickerColumnItems: GetOptionsPickerColumnItemsFunction) => {
     const [i1, i2] = indexList;
     const items3 = optionsData[2][i1] || [];
     const items3_2 = items3[i2];
     if (items3_2 != null) {
         return
     }
-    onOptionsChangeGetPickerItems(prevItem, 1).then((items) => {
+    getOptionsPickerColumnItems(prevItem, 2).then((items) => {
         items3[i2] = items;
         optionsData[2][i1] = items3;
         // 重新设置数据
@@ -314,20 +323,21 @@ const onCascadeSecondColumnChangeTryLoadData = (prevItem: PickerItem,
  * @param defaultSelectedValues
  * @param isSimplePickerItem
  * @param selectIndexList
- * @param onOptionsChangeGetPickerItems
+ * @param getOptionsPickerColumnItems
  */
 function initOptions(optionsColumns: number,
                      defaultSelectedValues: PickerItem[],
                      isSimplePickerItem: boolean,
                      selectIndexList: number[],
-                     onOptionsChangeGetPickerItems: (prevItem: PickerItem, cellIndex: number) => Promise<PickerItem[]>): Promise<NCascadeOptionsData> {
+                     getOptionsPickerColumnItems: GetOptionsPickerColumnItemsFunction): Promise<NCascadeOptionsData> {
+
     const promises: Promise<PickerItem[]>[] = [];
     for (let i = 0; i < optionsColumns; i++) {
-        promises.push(onOptionsChangeGetPickerItems(defaultSelectedValues[i], i));
+        promises.push(getOptionsPickerColumnItems(defaultSelectedValues[i], i));
     }
     return Promise.all(promises).then((values: Array<any>) => {
         const numbers: number[] = values.map((items, i) => {
-            return findSelectedIndex(items, isSimplePickerItem, defaultSelectedValues[i]) || 0;
+            return findSelectedIndex(items, isSimplePickerItem, defaultSelectedValues[i]);
         });
         selectIndexList.push(...numbers);
         return values as NCascadeOptionsData;
