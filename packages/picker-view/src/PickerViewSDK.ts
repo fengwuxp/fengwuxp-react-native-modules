@@ -11,7 +11,7 @@ type DateTimeFormatType =
     | "yyyy-MM-dd HH:mm"
     | "yyyy-MM-dd HH:mm:ss"
 
-interface PickerItemObject {
+export interface PickerItemObject {
 
     text: string;
     value?: string | number
@@ -19,6 +19,18 @@ interface PickerItemObject {
 
 
 export type PickerItem = PickerItemObject | string;
+
+export type CascadeOptionsData = [
+    Array<PickerItem>,
+    Array<PickerItem[]>,
+    Array<Array<PickerItem[]>>,
+];
+
+export type NCascadeOptionsData = [
+    Array<PickerItem>,
+    Array<PickerItem>,
+    Array<PickerItem>,
+];
 
 export interface PickerViewAndroidSDK {
 
@@ -37,15 +49,19 @@ export interface PickerViewAndroidSDK {
     optionsPick: (
         title?: string,
         selectOptions?: string,
-        optionsItemSelectChangeCallback?: (selectedValues: number[]) => void,
         configs?: {
             [key: string]: any
         },
+        optionsItemSelectChangeCallback?: (selectedValues: number[]) => void
     ) => Promise<number[]>;
 
     setSelectedOptions: (selectedValues: number[]) => void;
 
-    setPickerOptions: (item1: Array<PickerItem>,
-                       item2?: Array<PickerItem[]>,
-                       item3?: Array<Array<PickerItem[]>>) => void;
+    /**
+     * 设置级联的选择数据
+     * @param options
+     */
+    setPickerOptions: (options: CascadeOptionsData) => void;
+
+    setNPicker: (options: NCascadeOptionsData) => void;
 }

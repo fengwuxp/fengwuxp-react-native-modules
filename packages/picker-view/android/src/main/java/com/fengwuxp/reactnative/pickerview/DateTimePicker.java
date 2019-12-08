@@ -1,5 +1,6 @@
 package com.fengwuxp.reactnative.pickerview;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.util.TypedValue;
@@ -9,6 +10,7 @@ import com.bigkoo.pickerview.builder.TimePickerBuilder;
 import com.bigkoo.pickerview.listener.OnTimeSelectListener;
 import com.bigkoo.pickerview.view.TimePickerView;
 import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReadableMap;
 
 import java.text.ParseException;
@@ -21,6 +23,10 @@ public final class DateTimePicker {
 
     private static final String TAG = "DateTimePicker";
 
+    static final String DEFAULT_TITLE = "请选择";
+
+    private TimePickerView pickerView;
+
 
     private static final String[] DEFAULT_FORMATS = {
             "yyyy", "MM", "dd", "HH", "mm", "ss"
@@ -31,43 +37,36 @@ public final class DateTimePicker {
             "", "-", "-", " ", ":", ":"
     };
 
-    private static DateTimePicker DATE_TIME_PICKER;
 
-    private DateTimePicker() {
+    DateTimePicker() {
     }
 
-    public synchronized static DateTimePicker getInstance() {
-        if (DATE_TIME_PICKER == null) {
-            DATE_TIME_PICKER = new DateTimePicker();
-        }
-        return DATE_TIME_PICKER;
-    }
 
     /**
      * 注意selectOptions格式按年，月，日，时，分，秒顺序
      * 如果希望不出现选择，则填写 N，eg 选择年月则填写：年,月  或是 年,月,N,N,N,N
      *
      * @param title               可空， 默认：请选择
-     * @param selectOptions       可空，逗号隔开 ， 默认选项：年,月,日
+     * @param labelOptions        可空，逗号隔开 ， 默认选项：年,月,日
      * @param format              可空，默认格式：yyyy-MM-dd
      * @param dateTime，可以空，默认当前时间
      */
     public void pick(String title,
-                     String selectOptions,
+                     String labelOptions,
                      String format,
                      final String dateTime,
                      final String rangeOfStartTime,
                      final String rangeOfEndTime,
                      ReadableMap configs,
                      Promise promise,
-                     Context context) {
+                     Activity activity) {
 
-        if (!hasTxt(selectOptions)) {
+        if (!hasTxt(labelOptions)) {
             //默认可以选择年月日
-            selectOptions = "年,月,日";
+            labelOptions = "年,月,日";
         }
 
-        String[] options = selectOptions.split(",");
+        String[] options = labelOptions.split(",");
 
         boolean[] typeOptions = new boolean[]{true, false, false, false, false, false};
 
@@ -101,33 +100,29 @@ public final class DateTimePicker {
             format = "yyyy-MM-dd";
         }
         if (!hasTxt(title)) {
-            title = "请选择";
+            title = DEFAULT_TITLE;
         }
 
-        Log.i(TAG, "format:" + format + ",selectOptions:" + selectOptions);
+        Log.i(TAG, "format:" + format + ",selectOptions:" + labelOptions);
 
         final SimpleDateFormat df = new SimpleDateFormat(format, Locale.CHINA);
 
-        TimePickerBuilder builder = new TimePickerBuilder(context, new OnTimeSelectListener() {
-            @Override
-            public void onTimeSelect(Date date, View v) {
+        TimePickerBuilder builder = new TimePickerBuilder(activity, (date, v) -> {
+            String data = df.format(date);
+            Log.i(TAG, "on result date:" + date + ",format:" + df.toPattern() + ",value:" + data);
+            promise.resolve(data);
 
-
-                String data = df.format(date);
-                Log.i(TAG, "on result date:" + date + ",format:" + df.toPattern() + ",value:" + data);
-                promise.resolve(data);
-
-            }
         });
+
         builder.addOnCancelClickListener(v -> {
             promise.reject(PickerResultStatus.CANCEL.name(), "cancel select");
         });
 
         // 设置默认主题
-        TypedValue typedValue = new TypedValue();
-        context.getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
-        builder.setDividerColor(typedValue.data);
-        builder.setSubmitColor(typedValue.data);
+//        TypedValue typedValue = new TypedValue();
+//        context.getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
+//        builder.setDividerColor(typedValue.data);
+//        builder.setSubmitColor(typedValue.data);
 
         // TODO 设置配置
 //        Iterator<Map.Entry<String, Object>> entryIterator = configs.getEntryIterator();
@@ -163,7 +158,7 @@ public final class DateTimePicker {
 
         builder.setTitleText(title);
 
-        TimePickerView pickerView = builder.build();
+        this.pickerView = builder.build();
 
         if (hasTxt(dateTime)) {
             try {
@@ -176,12 +171,19 @@ public final class DateTimePicker {
             }
         }
 
-        pickerView.show();
+        activity.runOnUiThread(() -> pickerView.show());
 
     }
 
+    void destroy() {
+        if (this.pickerView != null) {
+            pickerView.dismiss();
+            this.pickerView = null;
+        }
+    }
 
-     static boolean hasTxt(String txt) {
+
+    static boolean hasTxt(String txt) {
         return txt != null && txt.trim().length() > 0;
     }
 }

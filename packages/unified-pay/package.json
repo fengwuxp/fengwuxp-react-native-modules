@@ -21,7 +21,8 @@
     "es",
     "types",
     "android",
-    "ios"
+    "ios",
+    "unified-pay.podspec"
   ],
   "author": "lovebing",
   "license": "MIT",

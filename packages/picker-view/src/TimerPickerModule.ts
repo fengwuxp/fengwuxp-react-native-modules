@@ -1,6 +1,6 @@
 import {PickerViewAndroidSDK} from "./PickerViewSDK";
 import {NativeModules} from 'react-native';
-import DateFormatUtils ,{DateFormatType}from "fengwuxp-common-utils/lib/date/DateFormatUtils";
+import DateFormatUtils, {DateFormatType} from "fengwuxp-common-utils/lib/date/DateFormatUtils";
 
 /**
  * 时间选择器模块
@@ -114,9 +114,9 @@ const TimerPickerModule: TimerPickerModuleInterface = {
 
     pick: (options: DateTimerPickerOptions) => {
         const format = options.format == null ? null : options.format;
-        const value = transformDate(options.value, format);
-        const rangeBegin = transformDate(options.rangeBegin, format);
-        const rangeEnd = transformDate(options.rangeEnd, format);
+        const value = transformDate(options.value, format) || "";
+        const rangeBegin = transformDate(options.rangeBegin, format) || "";
+        const rangeEnd = transformDate(options.rangeEnd, format) || "";
         const args = [
             options.title,
             options.columnLabels,

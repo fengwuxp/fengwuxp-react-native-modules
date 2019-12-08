@@ -54,6 +54,6 @@ android {
 
 dependencies {
     compileOnly 'com.facebook.react:react-native:+'
-    compileOnly 'com.contrarywind:Android-PickerView:4.1.9'
+    api 'com.contrarywind:Android-PickerView:4.1.9'
 }
 
