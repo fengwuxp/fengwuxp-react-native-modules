@@ -253,16 +253,9 @@ async function initCascadeOptionsData(optionsColumns: number,
 const onCascadeFirstColumnChangeTryLoadData = (prevItem: PickerItem,
                                                indexList: number[],
                                                getOptionsPickerColumnItems: GetOptionsPickerColumnItemsFunction) => {
-
     const [i1] = indexList;
-
     getOptionsPickerColumnItems(prevItem, 1).then((items) => {
-
         PickerData.optionsData[1] = items;
-        //
-        // // 重新设置数据
-        // PickerView.setSelectedOptions([i1, 0, 0]);
-        // PickerView.setNPickerOptions([...PickerData.optionsData] as any);
         onCascadeSecondColumnChangeTryLoadData(items[0], [i1, 0, 0], getOptionsPickerColumnItems);
     });
 };
@@ -276,7 +269,6 @@ const onCascadeFirstColumnChangeTryLoadData = (prevItem: PickerItem,
 const onCascadeSecondColumnChangeTryLoadData = (prevItem: PickerItem,
                                                 indexList: number[],
                                                 getOptionsPickerColumnItems: GetOptionsPickerColumnItemsFunction) => {
-
     const [i1, i2] = indexList;
     getOptionsPickerColumnItems(prevItem, 2).then((items) => {
         PickerData.optionsData[2] = items;
