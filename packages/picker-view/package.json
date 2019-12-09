@@ -39,10 +39,11 @@
     "fengwuxp-styles-dependency": "^1.0.0",
     "react": "^16.12.0",
     "react-native": "^0.61.4",
-    "typescript": "^3.7.2",
-    "tslib": "^1.10.0"
+    "tslib": "^1.10.0",
+    "typescript": "^3.7.2"
   },
   "dependencies": {
+    "@types/react-native": "^0.60.24",
     "fengwuxp-common-utils": "^1.0.0"
   }
 }

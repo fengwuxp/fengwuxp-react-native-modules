@@ -5,7 +5,7 @@ import {
     PickerItemObject,
     PickerViewAndroidSDK
 } from "./PickerViewSDK";
-import {DeviceEventEmitter, NativeModules} from 'react-native';
+import {DeviceEventEmitter, EmitterSubscription, NativeModules} from 'react-native';
 
 type OptionsSelectResult = {
     indexs: number[],
@@ -159,13 +159,17 @@ const OptionsPickerModule: OptionsPickerModuleInterface = {
                 onCascadeSecondColumnChangeTryLoadData(selectedResult.values[1], indexs, getOptionsPickerColumnItems)
             }
         };
-        registerOptionsSelectChangeHandlerListener(onOptionsItemSelectChangeCallbackWrapper);
+
+        // 监听选择change事件
+        const eventListenerHolder = registerOptionsSelectChangeHandlerListener(onOptionsItemSelectChangeCallbackWrapper);
 
         return new Promise((resolve, reject) => {
             PickerView.optionsPick(title, columnLabels, configs).then((indexs: number[]) => {
                 resolve(getSelectedResult(indexs, isCascade, PickerData.optionsData))
             }).catch(reject).finally(() => {
-                removeOptionsSelectChangeHandlerListener(onOptionsItemSelectChangeCallbackWrapper);
+                // removeOptionsSelectChangeHandlerListener(onOptionsItemSelectChangeCallbackWrapper);
+                // 移除事件监听
+                eventListenerHolder.remove();
                 PickerData.optionsData = null;
             });
         })
@@ -308,13 +312,13 @@ function initOptions(optionsColumns: number,
 
 const OPTIONS_SELECT_CHANGE_EVENT: string = "onOptionsSelectChange";
 
-const registerOptionsSelectChangeHandlerListener = (optionsSelectChangeHandle: (currentIndex, index: number[]) => void) => {
-    DeviceEventEmitter.addListener(OPTIONS_SELECT_CHANGE_EVENT, optionsSelectChangeHandle);
+const registerOptionsSelectChangeHandlerListener = (optionsSelectChangeHandle: (currentIndex, index: number[]) => void): EmitterSubscription => {
+    return DeviceEventEmitter.addListener(OPTIONS_SELECT_CHANGE_EVENT, optionsSelectChangeHandle as any);
 };
 
-const removeOptionsSelectChangeHandlerListener = (optionsSelectChangeHandle: (currentIndex, index: number[]) => void) => {
-    // DeviceEventEmitter.removeAllListeners(OPTIONS_SELECT_CHANGE_EVENT);
-    DeviceEventEmitter.removeListener(OPTIONS_SELECT_CHANGE_EVENT, optionsSelectChangeHandle);
-};
+// const removeOptionsSelectChangeHandlerListener = (optionsSelectChangeHandle: (currentIndex, index: number[]) => void) => {
+//     // DeviceEventEmitter.removeAllListeners(OPTIONS_SELECT_CHANGE_EVENT);
+//     DeviceEventEmitter.removeListener(OPTIONS_SELECT_CHANGE_EVENT, optionsSelectChangeHandle);
+// };
 
 export default OptionsPickerModule;
