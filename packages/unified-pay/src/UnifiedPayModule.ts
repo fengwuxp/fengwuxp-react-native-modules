@@ -1,6 +1,7 @@
 import {NativeModules} from 'react-native';
 import {UnifiedPayModuleSDKInterface, WeChatPreOrderInfo} from "./UnifiedPayModuleSDK";
 import {PayMethod} from "./PayMethod";
+import {Platform} from "react-native"
 
 
 export interface PayInfo {
@@ -34,7 +35,6 @@ export interface ReactNativeStandardizeThirdPartyPaymentModule {
 
 const UnifiedPay: UnifiedPayModuleSDKInterface = NativeModules.UnifiedPay;
 
-
 const UnifiedPayModule: ReactNativeStandardizeThirdPartyPaymentModule = {
     pay: (payInfo: PayInfo) => {
 
@@ -43,7 +43,11 @@ const UnifiedPayModule: ReactNativeStandardizeThirdPartyPaymentModule = {
             return UnifiedPay.aliPay(payInfo.preOrderInfo as string);
         }
         if (payInfo.method === PayMethod.WE_CHAT_PAY) {
-            return UnifiedPay.weChatPay(payInfo.preOrderInfo as WeChatPreOrderInfo);
+            const preOrderInfo = payInfo.preOrderInfo as WeChatPreOrderInfo;
+            if (Platform.OS === "ios") {
+                UnifiedPay.registerApp(preOrderInfo.appId);
+            }
+            return UnifiedPay.weChatPay(preOrderInfo);
         }
 
         return Promise.reject(`not support pay method: ${payInfo.method}`);

@@ -3,6 +3,13 @@ import {PayMethod} from "./PayMethod";
 
 export interface UnifiedPayModuleSDKInterface {
 
+
+    /**
+     * 注册appId
+     * @param appId
+     */
+    registerApp?: (appId: string) => void;
+
     /**
      * 支付宝支付
      * @param orderInfo

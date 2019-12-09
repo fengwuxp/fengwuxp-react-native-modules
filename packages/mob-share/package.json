@@ -21,7 +21,8 @@
     "es",
     "types",
     "android",
-    "ios"
+    "ios",
+    "fengwuxp-react-native-mob-share.podspec"
   ],
   "author": "lovebing",
   "license": "MIT",

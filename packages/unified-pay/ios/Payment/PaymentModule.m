@@ -53,10 +53,10 @@ RCT_EXPORT_METHOD(wxChatPay:(NSDictionary *)orderInfo
   //调起微信支付
   //注意order取的值对应的key要和自己服务器提供的一致
   PayReq *req = [[PayReq alloc] init];
-  req.partnerId = [orderInfo objectForKey:@"partnerid"];
-  req.prepayId = [orderInfo objectForKey:@"prepayid"];
-  req.nonceStr = [orderInfo objectForKey:@"noncestr"];
-  req.timeStamp = [[orderInfo objectForKey:@"timestamp"] intValue];
+  req.partnerId = [orderInfo objectForKey:@"partnerId"];
+  req.prepayId = [orderInfo objectForKey:@"prepayId"];
+  req.nonceStr = [orderInfo objectForKey:@"nonceStr"];
+  req.timeStamp = [[orderInfo objectForKey:@"timeStamp"] intValue];
   req.package = [orderInfo objectForKey:@"package"];
   req.sign = [orderInfo objectForKey:@"sign"];
   [WXApi sendReq:req completion:^(BOOL success) {
@@ -67,7 +67,7 @@ RCT_EXPORT_METHOD(wxChatPay:(NSDictionary *)orderInfo
 /// 微信回调处理
 /// @param aNotification 错误码
 - (void)handleWXPay:(NSNotification *)aNotification {
-  
+
   NSString * errCode =  [aNotification userInfo][@"errCode"];
   switch (errCode.integerValue) {
       case WXSuccess:
@@ -145,6 +145,6 @@ RCT_EXPORT_MODULE(wxPay);
 
 
 
- 
+
 @end
 
