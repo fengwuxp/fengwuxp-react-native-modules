@@ -7,7 +7,7 @@
 //
 
 #import "PaymentModule.h"
-
+#import <AlipaySDK/AlipaySDK.h>
 @implementation PaymentModule
 
 
@@ -19,6 +19,7 @@ RCTPromiseRejectBlock rejectBlock = nil;
   self = [super init];
   if (self) {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWXPay:) name:@"WXPay" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAliPay:) name:@"AliPay" object:nil];
   }
   return self;
 }
@@ -27,10 +28,23 @@ RCTPromiseRejectBlock rejectBlock = nil;
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+/// 微信注册
+/// @param APP_ID APP_ID
 RCT_EXPORT_METHOD(registerApp:(NSString *)APP_ID) {
   [WXApi registerApp:APP_ID universalLink:@""];
 }
 
+
+RCT_REMAP_METHOD(isSupported, // 判断是否支持调用微信SDK
+                 resolver:(RCTPromiseResolveBlock)resolve
+                 rejecter:(RCTPromiseRejectBlock)reject){
+  if (![WXApi isWXAppInstalled]) resolve(@NO);
+  else resolve(@YES);
+}
+
+
+/// 微信支付
+/// @param reject 订单信息
 RCT_EXPORT_METHOD(wxChatPay:(NSDictionary *)orderInfo
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
@@ -91,12 +105,41 @@ RCT_EXPORT_METHOD(wxChatPay:(NSDictionary *)orderInfo
   }
 }
 
-RCT_REMAP_METHOD(isSupported, // 判断是否支持调用微信SDK
-                 resolver:(RCTPromiseResolveBlock)resolve
-                 rejecter:(RCTPromiseRejectBlock)reject){
-  if (![WXApi isWXAppInstalled]) resolve(@NO);
-  else resolve(@YES);
+
+RCT_EXPORT_METHOD(aliPay:(NSString *)orderInfo resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+  __weak typeof(self) wSelf = self;
+  [[AlipaySDK defaultService] payOrder:orderInfo fromScheme:@"distributionylfkj" callback:^(NSDictionary *resultDic) {
+      __strong typeof(wSelf) sSelf = wSelf;
+      [sSelf dealWithAliPayResult:resultDic];
+  }];
 }
+
+// 支付宝回调
+- (void)handleAliPay:(NSNotification *)aNotification {
+  NSDictionary *resultDic = [aNotification userInfo][@"result"];
+  [self dealWithAliPayResult:resultDic];
+}
+
+// 支付宝处理
+- (void)dealWithAliPayResult:(NSDictionary*)resultDic {
+  NSString *msg;
+  if ([resultDic[@"resultStatus"] intValue] == 6001) {
+    msg = @"用户取消支付";
+    rejectBlock(resultDic[@"resultStatus"], msg, nil);
+  } else if ([resultDic[@"resultStatus"] intValue] == 6002) {
+    msg = @"网络连接失败，请检查网络";
+    rejectBlock(resultDic[@"resultStatus"], msg, nil);
+  }else if ([resultDic[@"resultStatus"] intValue]==9000) {
+    NSLog(@"支付宝支付成功");
+    resolveBlock(nil);
+  }else if ([resultDic[@"resultStatus"] intValue] == 4000) {
+    msg = @"支付失败";
+    rejectBlock(resultDic[@"resultStatus"], msg, nil);
+  } else {
+    rejectBlock(@"-1", @"支付错误", nil);
+  }
+}
+
 
 RCT_EXPORT_MODULE(wxPay);
 
