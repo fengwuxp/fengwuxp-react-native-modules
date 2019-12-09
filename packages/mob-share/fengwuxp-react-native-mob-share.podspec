@@ -2,7 +2,7 @@ require "json"
 
 Pod::Spec.new do |s|
   # NPM package specification
-  package = JSON.parse(File.read(File.join(__dir__, "package.json")))
+  package = JSON.parse(File.read(File.join(File.dirname(__FILE__), "package.json")))
 
   s.name         = "fengwuxp-react-native-mob-share"
   s.version      = package["version"]
@@ -11,8 +11,8 @@ Pod::Spec.new do |s|
   s.license      = "MIT"
   s.author       = { package["author"]["name"] => package["author"]["email"] }
   s.platforms    = { :ios => "9.0", :tvos => "9.0" }
-  s.source       = { :git => "https://github.com/fengwuxp/fengwuxp-react-native-modules.git", :tag => "#{s.version}" }
-  s.source_files = "packages/mob-share/ios/*"
+  s.source       = { :git => "https://github.com/fengwuxp/fengwuxp-react-native-modules.git"}
+  s.source_files = "packages/mob-share/ios/**/*.{h,m}"
  
   s.ios.dependency 'mob_sharesdk'
 
