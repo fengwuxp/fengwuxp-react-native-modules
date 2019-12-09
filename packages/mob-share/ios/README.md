@@ -15,5 +15,5 @@ pod 'mob_sharesdk/ShareSDKPlatforms/WeChatFull'
 pod 'mob_sharesdk/ShareSDKPlatforms/TencentWeibo'
 pod 'mob_sharesdk/ShareSDKExtension'
 
-pod 'fengwuxp-react-native-share', :path => '../node_modules/fengwuxp-react-native-share/ios'
+pod 'fengwuxp-react-native-mob-share', :path => '../node_modules/fengwuxp-react-native-mob-share/ios/ShareModule'
 6、执行命令pod install
