@@ -1,7 +1,7 @@
 {
-  "name": "fengwuxp-react-native-pay",
+  "name": "fengwuxp-react-native-picker-view",
   "version": "1.0.0",
-  "description": "react native pay SDK",
+  "description": "react native picker view",
   "publishConfig": {
     "registry": "http://nexus.oaknt.com:18081/repository/oak_npm_hosted/"
   },
@@ -21,8 +21,7 @@
     "es",
     "types",
     "android",
-    "ios",
-    "unified-pay.podspec"
+    "ios"
   ],
   "author": "lovebing",
   "license": "MIT",
@@ -35,11 +34,15 @@
     "publish:lib": "npm run rollup:build && npm run npm:publish"
   },
   "devDependencies": {
+    "@babel/runtime-corejs3": "^7.7.2",
     "fengwuxp-library-starter": "^1.0.0",
     "fengwuxp-styles-dependency": "^1.0.0",
-    "@babel/runtime-corejs3": "^7.7.2",
-    "typescript": "^3.7.2",
     "react": "^16.12.0",
-    "react-native": "^0.61.4"
+    "react-native": "^0.61.4",
+    "typescript": "^3.7.2",
+    "tslib": "^1.10.0"
+  },
+  "dependencies": {
+    "fengwuxp-common-utils": "^1.0.0"
   }
 }

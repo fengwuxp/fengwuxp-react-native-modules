@@ -3,7 +3,7 @@
 build/
 .idea
 local.properties
-*.iml
+android.iml
 gradle
 gradlew.bat
 gradlew

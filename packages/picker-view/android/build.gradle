@@ -3,25 +3,23 @@ def safeExtGet(prop, fallback) {
 }
 
 apply plugin: 'com.android.library'
-apply plugin: 'maven'
+//apply plugin: 'maven'
 
 
 buildscript {
     repositories {
-
         mavenLocal()
         google()
         jcenter()
         maven() {
             url 'http://repo.codeboot.net/maven/'
         }
-    }
 
+    }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.2'
+        classpath 'com.android.tools.build:gradle:3.5.3'
     }
 }
-
 repositories {
     mavenLocal()
     google()
@@ -31,7 +29,6 @@ repositories {
     }
 
 }
-
 android {
     compileSdkVersion safeExtGet('compileSdkVersion', 28)
     buildToolsVersion safeExtGet('buildToolsVersion', '28.0.3')
@@ -56,13 +53,7 @@ android {
 }
 
 dependencies {
-    api files('libs/alipaySdk-15.6.5-20190718211159-noUtdid.aar')
-
-    // @link https://github.com/kingofglory/EasyPay  项目还需要在依赖这3个包
-    compileOnly 'com.xgr.easypay:EasyPay:2.0.0'
-    compileOnly 'com.xgr.easypay:wechatpay:2.0.0'
-    compileOnly 'com.xgr.easypay:alipay:2.0.0'
-
     compileOnly 'com.facebook.react:react-native:+'
+    api 'com.contrarywind:Android-PickerView:4.1.9'
 }
 

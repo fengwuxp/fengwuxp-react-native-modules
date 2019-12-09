@@ -49,8 +49,6 @@ public class UnifiedPayModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void aliPay(String orderInfo, Promise promise) {
-//        checkCalled(promise);
-
         //实例化支付宝支付策略
         AliPay aliPay = new AliPay();
         //构造支付宝订单实体。一般都是由服务端直接返回。

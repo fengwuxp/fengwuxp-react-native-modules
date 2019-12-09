@@ -1,9 +1,9 @@
 package com.fengwuxp.reactnative.mob;
 
 /**
- * 分享结果状态
+ * sdk 执行结果
  */
-public enum ShareResultStatus {
+public enum ShareSDKResultStatus {
 
     SUCCESS,
 

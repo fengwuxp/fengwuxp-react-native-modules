@@ -1,7 +1,7 @@
 /**
  * 分享平台类型
  */
-export enum SharePlatformType {
+export enum SocialType {
 
 
     /**
@@ -59,6 +59,11 @@ export enum SharePlatformType {
     /**
      * 链接
      */
-    LINK = "LINK"
+    LINK = "LINK",
+
+    /**
+     * 支付宝
+     */
+    ALI_PAY = "ALI_PAY"
 
 }
