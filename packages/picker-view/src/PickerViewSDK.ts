@@ -34,6 +34,16 @@ export type NCascadeOptionsData = [
 
 export interface PickerViewAndroidSDK {
 
+    /**
+     * 日期选择器
+     * @param title
+     * @param selectOptions
+     * @param format
+     * @param dateTime
+     * @param rangeOfStartTime
+     * @param rangeOfEndTime
+     * @param configs
+     */
     datePick: (
         title?: string,
         selectOptions?: string,
@@ -46,6 +56,13 @@ export interface PickerViewAndroidSDK {
         },
     ) => Promise<string>;
 
+    /**
+     * 多列选项选择器
+     * @param title
+     * @param selectOptions
+     * @param configs
+     * @param optionsItemSelectChangeCallback
+     */
     optionsPick: (
         title?: string,
         selectOptions?: string,
@@ -55,6 +72,10 @@ export interface PickerViewAndroidSDK {
         optionsItemSelectChangeCallback?: (selectedValues: number[]) => void
     ) => Promise<number[]>;
 
+    /**
+     * 设置默认的选中索引
+     * @param selectedValues
+     */
     setSelectedOptions: (selectedValues: number[]) => void;
 
     /**
