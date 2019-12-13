@@ -29,6 +29,16 @@ export interface ShareParams {
     url?: string;
 
     //图片
-    image?: string;
+    imageUrl?: string;
+    imageArray?: string[];
+
+    titleUrl?: string;
+
+    filePath?: string;
+
+    musicUrl?: string;
+
+
+    siteUrl?: string;
 
 }

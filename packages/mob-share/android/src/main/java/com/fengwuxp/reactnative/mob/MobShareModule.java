@@ -92,10 +92,11 @@ public class MobShareModule extends ReactContextBaseJavaModule {
         Iterator<Map.Entry<String, Object>> entryIterator = Objects.requireNonNull(params).getEntryIterator();
         while (entryIterator.hasNext()) {
             Map.Entry<String, Object> next = entryIterator.next();
-            map.put(next.getKey(), next.getValue());
+            Object value = next.getValue();
+            map.put(next.getKey(), value);
         }
 
-        ShareHelper.getInstance().shareToSignPlatform(mContext, platform, map, new ShareMobPlatformActionListener(promise, true));
+        ShareHelper.getInstance().shareToSignPlatform(getCurrentActivity(), platform, map, new ShareMobPlatformActionListener(promise, true));
     }
 
 

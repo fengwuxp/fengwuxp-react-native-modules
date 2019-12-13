@@ -1,10 +1,11 @@
 package com.fengwuxp.reactnative.pickerview;
 
 import android.app.Activity;
-import android.content.Context;
+import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
-import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -12,10 +13,11 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.uimanager.SimpleViewManager;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
+
 
 /**
  * picker view
@@ -30,6 +32,8 @@ public class PickerViewModule extends ReactContextBaseJavaModule implements Life
     private DateTimePicker dateTimePicker;
 
     private OptionsPicker optionsPicker = new OptionsPicker();
+
+    private Handler mainHandler = new Handler(Looper.getMainLooper());
 
 
     private static final String REACT_MODEL_NAME = "PickerView";
@@ -48,7 +52,6 @@ public class PickerViewModule extends ReactContextBaseJavaModule implements Life
     @Override
     public void initialize() {
         super.initialize();
-
     }
 
     /**
@@ -112,17 +115,23 @@ public class PickerViewModule extends ReactContextBaseJavaModule implements Life
         if (this.optionsPicker == null) {
             return;
         }
-
-        if (options != null) {
-            Integer[] integers = new Integer[3];
-            for (int i = 0; i < 3; i++) {
-                double aDouble = options.getDouble(i);
-                integers[i] = (int) aDouble;
-            }
-            this.optionsPicker.setSelectedOptions(integers);
+        if (options == null) {
+            return;
         }
-    }
+        mainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                Integer[] integers = new Integer[3];
+                for (int i = 0; i < 3; i++) {
+                    double aDouble = options.getDouble(i);
+                    integers[i] = (int) aDouble;
+                }
+                optionsPicker.setSelectedOptions(integers);
+            }
+        });
 
+
+    }
 
     /**
      * 设置级联的选项列表
@@ -134,14 +143,22 @@ public class PickerViewModule extends ReactContextBaseJavaModule implements Life
         if (this.optionsPicker == null) {
             return;
         }
-        Log.i(TAG, MessageFormat.format("{0}", options1Items.size()));
         int size = options1Items.size();
-        this.optionsPicker.setPickerOptions(
-                options1Items.getArray(0),
-                size > 1 ? options1Items.getArray(1) : null,
-                size > 2 ? options1Items.getArray(2) : null
-        );
+        Log.i(TAG, MessageFormat.format("{0}", size));
+        mainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                optionsPicker.setPickerOptions(
+                        options1Items.getArray(0),
+                        size > 1 ? options1Items.getArray(1) : null,
+                        size > 2 ? options1Items.getArray(2) : null
+                );
+            }
+        });
+
+
     }
+
 
     /**
      * 设置非级联的选项列表
@@ -153,12 +170,17 @@ public class PickerViewModule extends ReactContextBaseJavaModule implements Life
         if (this.optionsPicker == null) {
             return;
         }
-        int size = options1Items.size();
-        this.optionsPicker.setNPicker(
-                size > 0 ? options1Items.getArray(0) : null,
-                size > 1 ? options1Items.getArray(1) : null,
-                size > 2 ? options1Items.getArray(2) : null
-        );
+        mainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                int size = options1Items.size();
+                optionsPicker.setNPicker(
+                        size > 0 ? options1Items.getArray(0) : null,
+                        size > 1 ? options1Items.getArray(1) : null,
+                        size > 2 ? options1Items.getArray(2) : null
+                );
+            }
+        });
     }
 
 
@@ -181,4 +203,6 @@ public class PickerViewModule extends ReactContextBaseJavaModule implements Life
             this.optionsPicker.destroy();
         }
     }
+
+
 }

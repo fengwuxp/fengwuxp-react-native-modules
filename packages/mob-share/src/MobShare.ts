@@ -1,6 +1,7 @@
-import {NativeModules} from 'react-native';
+import {NativeModules, Linking} from 'react-native';
 import {MobSDKInterface, ShareParams} from "./MobShareSDK";
 import {SocialType} from "./SocialType";
+import {SOCIAL_TYPE_MAP_APP_SCHEME} from "./AppURLSchemeConstant";
 
 
 export interface MobShareModuleInterface {
@@ -36,7 +37,15 @@ const MobShareSDK: MobSDKInterface = NativeModules.MobShareSDK;
 
 const MobShareModule: MobShareModuleInterface = {
     share: (sharePlatformType: SocialType, shareParams: ShareParams) => {
-        return MobShareSDK.share(sharePlatformType, shareParams);
+
+        return Linking.canOpenURL(SOCIAL_TYPE_MAP_APP_SCHEME[sharePlatformType]).then((isInstall) => {
+            if (isInstall) {
+                return Promise.reject({message: "应用未安装"});
+            }
+            return MobShareSDK.share(sharePlatformType, shareParams);
+        })
+
+
     },
 
     shareByQQ: (shareParams: ShareParams) => {

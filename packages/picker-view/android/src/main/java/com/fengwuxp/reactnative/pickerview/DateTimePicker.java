@@ -1,17 +1,14 @@
 package com.fengwuxp.reactnative.pickerview;
 
 import android.app.Activity;
-import android.content.Context;
+import android.os.Handler;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.View;
 
 import com.bigkoo.pickerview.builder.TimePickerBuilder;
-import com.bigkoo.pickerview.listener.OnTimeSelectListener;
 import com.bigkoo.pickerview.view.TimePickerView;
 import com.facebook.react.bridge.Promise;
-import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.UiThreadUtil;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -171,7 +168,8 @@ public final class DateTimePicker {
             }
         }
 
-        activity.runOnUiThread(() -> pickerView.show());
+        UiThreadUtil.runOnUiThread(() -> pickerView.show());
+
 
     }
 

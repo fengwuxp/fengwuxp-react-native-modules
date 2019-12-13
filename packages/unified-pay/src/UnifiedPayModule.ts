@@ -34,6 +34,8 @@ export interface ReactNativeStandardizeThirdPartyPaymentModule {
 }
 
 const UnifiedPay: UnifiedPayModuleSDKInterface = NativeModules.UnifiedPay;
+let INIT_IOS_STATUS: boolean = false;
+const IS_IOS = Platform.OS === "ios";
 
 const UnifiedPayModule: ReactNativeStandardizeThirdPartyPaymentModule = {
     pay: (payInfo: PayInfo) => {
@@ -44,7 +46,10 @@ const UnifiedPayModule: ReactNativeStandardizeThirdPartyPaymentModule = {
         }
         if (payInfo.method === PayMethod.WE_CHAT_PAY) {
             const preOrderInfo = payInfo.preOrderInfo as WeChatPreOrderInfo;
-            if (Platform.OS === "ios") {
+            if (IS_IOS && !INIT_IOS_STATUS) {
+                // init only once
+                // TODO for ios native 这个控制不太安全，后面应该调整到ios端去做
+                INIT_IOS_STATUS = true;
                 UnifiedPay.registerApp(preOrderInfo.appId);
             }
             return UnifiedPay.weChatPay(preOrderInfo);
