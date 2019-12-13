@@ -39,7 +39,7 @@ const MobShareModule: MobShareModuleInterface = {
     share: (sharePlatformType: SocialType, shareParams: ShareParams) => {
 
         return Linking.canOpenURL(SOCIAL_TYPE_MAP_APP_SCHEME[sharePlatformType]).then((isInstall) => {
-            if (isInstall) {
+            if (!isInstall) {
                 return Promise.reject({message: "应用未安装"});
             }
             return MobShareSDK.share(sharePlatformType, shareParams);
