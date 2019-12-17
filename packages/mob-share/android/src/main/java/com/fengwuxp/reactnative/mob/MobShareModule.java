@@ -8,17 +8,16 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeMap;
-import com.fengwuxp.reactnative.mob.authenticate.AuthenticateHelper;
-import com.fengwuxp.reactnative.mob.share.ShareHelper;
+import com.fengwuxp.sharesdk.PlatformAuthorizeUserInfoManager;
+import com.fengwuxp.sharesdk.PlatformShareManager;
+import com.fengwuxp.sharesdk.SocialType;
 import com.mob.MobSDK;
 
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Objects;
 
 import androidx.annotation.RequiresApi;
 import cn.sharesdk.framework.Platform;
@@ -32,7 +31,13 @@ import cn.sharesdk.framework.PlatformActionListener;
  */
 public class MobShareModule extends ReactContextBaseJavaModule {
 
+
+    private static final String NAME = "MobShareSDK";
+
     private Context mContext;
+
+    private PlatformShareManager platformShareManager = new PlatformShareManager();
+    private PlatformAuthorizeUserInfoManager platformAuthorizeUserInfoManager = new PlatformAuthorizeUserInfoManager();
 
 
     public MobShareModule(ReactApplicationContext reactContext) {
@@ -42,7 +47,7 @@ public class MobShareModule extends ReactContextBaseJavaModule {
 
     @Override
     public String getName() {
-        return "MobShareSDK";
+        return NAME;
     }
 
     @Override
@@ -65,8 +70,8 @@ public class MobShareModule extends ReactContextBaseJavaModule {
             promise.reject(ShareSDKResultStatus.FAILURE.name(), "未指定授权平台");
             return;
         }
-
-        AuthenticateHelper.authorize(mContext, platform, new ShareMobPlatformActionListener(promise, false));
+        SocialType shareType = SocialType.valueOf(platform);
+        platformAuthorizeUserInfoManager.doAuthorize(shareType, getCurrentActivity(), new ShareMobPlatformActionListener(promise, false));
     }
 
     /**
@@ -78,7 +83,6 @@ public class MobShareModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void share(String platform, ReadableMap params, Promise promise) {
-//        this.checkCalled(promise);
         if (TextUtils.isEmpty(platform)) {
             promise.reject(ShareSDKResultStatus.FAILURE.name(), "未指定分享平台");
             return;
@@ -86,17 +90,31 @@ public class MobShareModule extends ReactContextBaseJavaModule {
             promise.reject(ShareSDKResultStatus.FAILURE.name(), "未指定分享内容");
             return;
         }
+        SocialType shareType = SocialType.valueOf(platform);
+        String title = params.getString("title");
+        String text = params.getString("text");
+        String imageUrl = params.getString("imageUrl");
+        String url = params.getString("url");
+        platformShareManager.shareWebPage(shareType, title, text, imageUrl, url, new ShareMobPlatformActionListener(promise, true));
 
-        // 复制参数
-        HashMap<String, Object> map = new HashMap<>();
-        Iterator<Map.Entry<String, Object>> entryIterator = Objects.requireNonNull(params).getEntryIterator();
-        while (entryIterator.hasNext()) {
-            Map.Entry<String, Object> next = entryIterator.next();
-            Object value = next.getValue();
-            map.put(next.getKey(), value);
+        ;
+    }
+
+    private Platform.ShareParams getShareParams(ReadableMap params) {
+        Platform.ShareParams shareParams = new Platform.ShareParams();
+        shareParams.setText(params.getString("text"));
+        shareParams.setTitle(params.getString("title"));
+        shareParams.setImageUrl(params.getString("imageUrl"));
+        shareParams.setTitleUrl(params.getString("titleUrl"));
+        shareParams.setMusicUrl(params.getString("musicUrl"));
+        shareParams.setAddress(params.getString("address"));
+        shareParams.setFilePath(params.getString("filePath"));
+        ReadableArray imageArray = params.getArray("imageArray");
+        if (imageArray != null) {
+            shareParams.setImageArray(imageArray.toArrayList().toArray(new String[0]));
         }
+        return shareParams;
 
-        ShareHelper.getInstance().shareToSignPlatform(getCurrentActivity(), platform, map, new ShareMobPlatformActionListener(promise, true));
     }
 
 

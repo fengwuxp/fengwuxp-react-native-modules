@@ -1,0 +1,55 @@
+{
+  "name": "fengwuxp-react-native-check-updater",
+  "version": "1.0.0",
+  "description": "react native app check updater",
+  "publishConfig": {
+    "registry": "http://nexus.oaknt.com:18081/repository/oak_npm_hosted/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fengwuxp/fengwuxp-react-native-modules"
+  },
+  "bugs": {
+    "url": "https://github.com/fengwuxp/fengwuxp-react-native-modules/issues"
+  },
+  "homepage": "https://github.com/fengwuxp/fengwuxp-react-native-modules#readme",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "typings": "types/index.d.ts",
+  "files": [
+    "lib",
+    "es",
+    "types",
+    "android",
+    "ios"
+  ],
+  "author": "lovebing",
+  "license": "MIT",
+  "scripts": {
+    "yarn:install": "yarn install",
+    "npm:publish": "npm publish",
+    "tsc:build": "rm -rf ./types && tsc -p ./tsconfig.lib.json",
+    "tsc": "rm -rf ./lib && tsc -p ./tsconfig.json",
+    "test": "jest --config ./jest.config.js --verbose=true",
+    "rollup:build": "npm run tsc:build && rollup -c && rm -rf ./types-temp",
+    "publish:lib": "npm run tsc && npm run npm:publish"
+  },
+  "devDependencies": {
+    "@babel/runtime-corejs3": "^7.7.2",
+    "fengwuxp-library-starter": "^1.0.0",
+    "fengwuxp-styles-dependency": "^1.0.0",
+    "react": "^16.12.0",
+    "react-native": "^0.61.4",
+    "tslib": "^1.10.0",
+    "typescript": "^3.7.2"
+  },
+  "dependencies": {
+    "@types/react-native": "^0.60.24",
+    "fengwuxp-common-utils": "^1.0.0",
+    "fengwuxp-react-native-mob-share": "^1.0.0",
+    "react-native-device-info": "^5.4.0",
+    "react-native-fs": "^2.16.2",
+    "react-native-progress": "^4.0.2",
+    "react-native-root-siblings": "^4.0.6"
+  }
+}

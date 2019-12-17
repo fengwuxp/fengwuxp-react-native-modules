@@ -1,0 +1,68 @@
+def safeExtGet(prop, fallback) {
+    rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'maven'
+
+
+buildscript {
+    repositories {
+
+        mavenLocal()
+        google()
+        jcenter()
+        maven() {
+            url 'http://repo.codeboot.net/maven/'
+        }
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.5.2'
+    }
+}
+
+repositories {
+    mavenLocal()
+    google()
+    jcenter()
+    maven() {
+        url 'http://repo.codeboot.net/maven/'
+    }
+    maven { url 'https://jitpack.io' }
+}
+
+android {
+    compileSdkVersion safeExtGet('compileSdkVersion', 28)
+    buildToolsVersion safeExtGet('buildToolsVersion', '28.0.3')
+
+    defaultConfig {
+        minSdkVersion safeExtGet('minSdkVersion', 19)
+        targetSdkVersion safeExtGet('targetSdkVersion', 28)
+        versionCode 1
+        versionName "${version}"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+
+    api 'com.github.AlexLiuSheng:CheckVersionLib:2.2.3'
+
+    api 'androidx.appcompat:appcompat:1.1.0'
+    api 'com.squareup.okhttp3:okhttp:3.14.2'
+    api 'org.greenrobot:eventbus:3.1.1'
+
+    compileOnly 'com.facebook.react:react-native:+'
+}
+
