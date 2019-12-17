@@ -37,7 +37,7 @@ android {
     buildToolsVersion safeExtGet('buildToolsVersion', '28.0.3')
 
     defaultConfig {
-        minSdkVersion safeExtGet('minSdkVersion', 19)
+        minSdkVersion safeExtGet('minSdkVersion', 21)
         targetSdkVersion safeExtGet('targetSdkVersion', 28)
         versionCode 1
         versionName "${version}"
@@ -59,9 +59,9 @@ dependencies {
     api files('libs/alipaySdk-15.6.5-20190718211159-noUtdid.aar')
 
     // @link https://github.com/kingofglory/EasyPay  项目还需要在依赖这3个包
-    compileOnly 'com.xgr.easypay:EasyPay:2.0.0'
-    compileOnly 'com.xgr.easypay:wechatpay:2.0.0'
-    compileOnly 'com.xgr.easypay:alipay:2.0.0'
+    compileOnly 'com.xgr.easypay:EasyPay:2.0.0@aar'
+    compileOnly 'com.xgr.easypay:wechatpay:2.0.0@aar'
+    compileOnly 'com.xgr.easypay:alipay:2.0.0@aar'
 
     compileOnly 'com.facebook.react:react-native:+'
 }

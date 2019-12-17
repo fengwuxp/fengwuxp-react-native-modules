@@ -19,10 +19,10 @@ buildscript {
 }
 
 //不使用缓存，使用仓库中最新的包
-configurations.all {
-    resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds' // 动态版本 x.x.+
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'//  变化版本 x.x.x
-}
+//configurations.all {
+//    resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds' // 动态版本 x.x.+
+//    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'//  变化版本 x.x.x
+//}
 
 android {
     compileSdkVersion safeExtGet('compileSdkVersion', 28)
@@ -47,26 +47,24 @@ android {
     }
 }
 
-allprojects {
-    repositories {
-        maven {
-            url "http://mvn.mob.com/android"
-        }
-        maven {
-            url "http://nexus.oaknt.com:18081/repository/maven-public/"
-            credentials {
-                username = "anonymous"
-                password = ""
-            }
-        }
-        mavenLocal()
-        google()
-        jcenter()
-        maven() {
-            url 'http://repo.codeboot.net/maven/'
-        }
-
+repositories {
+    maven {
+        url "http://mvn.mob.com/android"
     }
+    maven {
+        url "http://nexus.oaknt.com:18081/repository/maven-public/"
+        credentials {
+            username = "anonymous"
+            password = ""
+        }
+    }
+    mavenLocal()
+    google()
+    jcenter()
+    maven() {
+        url 'http://repo.codeboot.net/maven/'
+    }
+
 }
 
 
@@ -75,7 +73,7 @@ def shareSDKVersion = "3.6.8";
 dependencies {
 
 
-    api 'com.fengwuxp.android:mob-ShareSDK:1.0.0@aar'
+    compileOnly 'com.fengwuxp.android:mob-ShareSDK:1.0.0@aar'
 
     compileOnly "com.mob:MobCommons:2019.1205.1718"
     compileOnly "com.mob:MobTools:2019.1205.1732"
