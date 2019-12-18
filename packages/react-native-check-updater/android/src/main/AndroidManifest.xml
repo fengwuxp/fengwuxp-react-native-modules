@@ -6,7 +6,7 @@
 
         <provider
             android:name="com.fengwuxp.reactnative.version.VersionFileProvider"
-            android:authorities="${applicationId}.selfupdate.fileprovider"
+            android:authorities="${applicationId}.versionProvider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

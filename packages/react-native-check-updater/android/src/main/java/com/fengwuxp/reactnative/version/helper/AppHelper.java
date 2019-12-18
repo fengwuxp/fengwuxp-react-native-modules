@@ -60,12 +60,13 @@ public final class AppHelper {
                 PackageInfo info = pm.getPackageArchiveInfo(downloadPath,
                         PackageManager.GET_ACTIVITIES);
                 //判断安装包存在并且包名一样并且版本号不一样
-                int versionCode = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
-                Log.i(TAG, "本地安装包版本号：" + info.versionCode + "\n 当前app版本号：" + context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode);
-                if (context.getPackageName().equalsIgnoreCase(info.packageName) && versionCode != info.versionCode) {
-                    //判断开发者传入的最新版本号是否大于缓存包的版本号，大于那么相当于没有缓存
-                    result = newestVersionCode == null || info.versionCode >= newestVersionCode;
-                }
+//                int versionCode = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
+//                Log.i(TAG, "本地安装包版本号：" + info.versionCode + "\n 当前app版本号：" + context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode);
+//                if (context.getPackageName().equalsIgnoreCase(info.packageName) && versionCode != info.versionCode) {
+//                    //判断开发者传入的最新版本号是否大于缓存包的版本号，大于那么相当于没有缓存
+//                    result = newestVersionCode == null || info.versionCode >= newestVersionCode;
+//                }
+                result = true;
             } catch (Exception e) {
                 result = false;
             }

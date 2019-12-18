@@ -17,13 +17,6 @@ export interface DownloadDialogProps {
 
     backgroundIcon?: ImageSourcePropType;
 
-    /**
-     * Fill color of the indicator.
-     *
-     * @type {string}
-     * @memberof DefaultPropTypes
-     * @default rgba(0, 122, 255, 1)
-     */
     progressBarColor?: string;
 
     title?: string;
@@ -45,9 +38,9 @@ export const DownloadDialog = (props: DownloadDialogProps) => {
                     <Progress.Bar color={progressBarColor}
                                   height={StyleSheetScreenAdapter.scalePx2dp(16)}
                                   progress={downloadProgress}
-                                  width={StyleSheetScreenAdapter.scalePx2dp(410)}/>
+                                  width={StyleSheetScreenAdapter.scalePx2dp(400)}/>
                     <Text
-                        style={[styles.download_progress_text]}>{parseFloat((downloadProgress * 100).toString()).toFixed(2)}%</Text>
+                        style={[styles.download_progress_text]}>{parseFloat((downloadProgress * 100).toString()).toFixed(0)}%</Text>
                 </View>
             </View>
         </View>
@@ -109,8 +102,9 @@ export const DownloadDialog = (props: DownloadDialogProps) => {
                             })
                         }
                         return Promise.reject();
+                    }).catch(() => {
+                        Downloader.hide();
                     });
-
 
                 }}>立即升级</Text>
             </View>

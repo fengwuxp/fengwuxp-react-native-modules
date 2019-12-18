@@ -5,22 +5,22 @@ import {PlatformType} from "./PlatformType";
  *客户端版本信息
  **/
 export interface AppVersionInfo {
+
     /**
      * 应用名称
      */
-    name: string;
-    /**
-     * ID
-     */
-    id: number;
+    name?: string;
+
     /**
      * 显示版本
      */
-    version: string;
+    version?: string;
+
     /**
      * 版本号
      */
     code: number;
+
     /**
      * 更新URL
      */
@@ -31,22 +31,21 @@ export interface AppVersionInfo {
      */
     note: string;
 
-    /**
-     *
-     */
-    platformTypeDesc: string;
+
     /**
      * 应用编码
      */
-    appCode: string;
+    appCode?: string;
     /**
      * 客户端类型
      */
-    platformType: PlatformType;
+    platformType?: PlatformType;
+
     /**
      * 强制升级
      */
     forcibly: boolean;
+
     /**
      * 更新页面的url
      */
@@ -54,7 +53,8 @@ export interface AppVersionInfo {
     /**
      * 发布日期
      */
-    publicTime: Date;
+    publicTime?: Date;
+
     /**
      * 是否apk下载
      */
