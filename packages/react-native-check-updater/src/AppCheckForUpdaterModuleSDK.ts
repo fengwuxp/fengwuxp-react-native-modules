@@ -1,14 +1,11 @@
-export type DownloadAndInstallApp = {
-    title: string;
-    content: string,
-    downloadUrl: string
-};
+
 
 export interface AppCheckForUpdaterModuleSDK {
 
     /**
-     * 下载并安装 app
-     * @param options
+     * 安装 app
+     * @param apkFilePath
+     * @param newestVersionCode 最新的版本号
      */
-    downloadAndInstallApp: (options: DownloadAndInstallApp) => void;
+    installApp: (apkFilePath: string, newestVersionCode: number) => Promise<void>;
 }

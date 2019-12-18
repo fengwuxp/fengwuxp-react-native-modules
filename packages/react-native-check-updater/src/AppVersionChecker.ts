@@ -39,12 +39,15 @@ export default class AppVersionChecker {
      */
     checkApkUpdate = (): Promise<void> => {
         if (Platform.OS !== "android") {
+            // "not support checker update"
             return Promise.reject();
         }
 
         return new Promise((resolve, reject) => {
             this.isNewestVersion().then((data) => {
-                Downloader.show();
+                Downloader.show({
+                    appVersionInfo: data
+                });
                 resolve();
             })
 
@@ -60,7 +63,7 @@ export default class AppVersionChecker {
         return this.getLocalVersion().then(({versionCode}) => {
             return this.getAppVersionByServer({
                 appCode: null,
-                currVersionCode: parseInt(versionCode)
+                currVersionCode: versionCode
             }).catch(({message}) => {
 
                 return Promise.reject(message);
@@ -73,9 +76,11 @@ export default class AppVersionChecker {
      */
     getLocalVersion = (): Promise<LocalVersionInfo> => {
 
+        const readableVersion = DeviceInfo.getReadableVersion();
+        const versionCode = readableVersion.split(".")[2];
         return Promise.resolve({
-            versionCode: DeviceInfo.getVersion(),
-            versionName: DeviceInfo.getReadableVersion(),
+            versionCode: parseInt(versionCode),
+            versionName: readableVersion,
             packageName: DeviceInfo.getBundleId()
         })
     };

@@ -13,12 +13,11 @@
     "url": "https://github.com/fengwuxp/fengwuxp-react-native-modules/issues"
   },
   "homepage": "https://github.com/fengwuxp/fengwuxp-react-native-modules#readme",
-  "main": "lib/index.js",
-  "module": "es/index.js",
+  "main": "src/index.js",
+  "module": "src/index.js",
   "typings": "types/index.d.ts",
   "files": [
-    "lib",
-    "es",
+    "src",
     "types",
     "android",
     "ios"
@@ -27,12 +26,9 @@
   "license": "MIT",
   "scripts": {
     "yarn:install": "yarn install",
-    "npm:publish": "npm publish",
-    "tsc:build": "rm -rf ./types && tsc -p ./tsconfig.lib.json",
-    "tsc": "rm -rf ./lib && tsc -p ./tsconfig.json",
     "test": "jest --config ./jest.config.js --verbose=true",
     "rollup:build": "npm run tsc:build && rollup -c && rm -rf ./types-temp",
-    "publish:lib": "npm run tsc && npm run npm:publish"
+    "publish:lib": "run npm:publish"
   },
   "devDependencies": {
     "@babel/runtime-corejs3": "^7.7.2",
@@ -47,6 +43,7 @@
     "@types/react-native": "^0.60.24",
     "fengwuxp-common-utils": "^1.0.0",
     "fengwuxp-react-native-mob-share": "^1.0.0",
+    "fengwuxp-react-native-starter": "^1.0.0",
     "react-native-device-info": "^5.4.0",
     "react-native-fs": "^2.16.2",
     "react-native-progress": "^4.0.2",

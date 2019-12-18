@@ -1,0 +1,94 @@
+@dialog_width: 550px;
+
+.download_mask {
+  background-color: rgba(0, 0, 0, .3);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.download_progress {
+  background-color: #ffffff;
+  width: @dialog_width;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.download_progress_bar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.download_progress_text {
+  color: #000000;
+  font-size: 26px;
+}
+
+.margin_left_30 {
+  margin-left: 30px;
+}
+
+.dialog {
+  background-color: #ffffff;
+  width: @dialog_width;
+  border-radius: 10px;
+}
+
+.dialog_title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 20px;
+}
+
+.dialog_title_text {
+  font-size: 32px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.dialog_content {
+  padding: 30px 25px;
+}
+
+.dialog_content_text {
+  font-size: 28px;
+  line-height: 42px;
+  color: #666666;
+}
+
+.dialog_buttons {
+  display: flex;
+  flex-direction: row;
+  border-top-width: 1px;
+  border-top-color: #b2b2b2;
+  border-style: solid;
+}
+
+@button_height: 80px;
+
+.dialog_button {
+  width: @dialog_width/2;
+  height: @button_height;
+  line-height: @button_height;
+  text-align: center;
+  font-size: 32px;
+}
+
+.border_right {
+  border-right-width: 1px;
+  border-right-color: #b2b2b2;
+  border-style: solid;
+}
+
+.update_immediately {
+  color: #0e8de9;
+}

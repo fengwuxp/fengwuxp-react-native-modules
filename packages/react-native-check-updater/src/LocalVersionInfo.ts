@@ -1,6 +1,6 @@
 export interface LocalVersionInfo {
 
-    versionCode: string
+    versionCode: number
     versionName: string,
     packageName: string
 }
