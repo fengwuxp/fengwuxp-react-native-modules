@@ -68,9 +68,8 @@ export default class AppVersionChecker {
             return this.getAppVersionByServer({
                 appCode: null,
                 currVersionCode: versionCode
-            }).catch(({message}) => {
-
-                return Promise.reject(message);
+            }).catch((e) => {
+                return Promise.reject(e);
             });
         })
     };

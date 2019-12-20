@@ -73,7 +73,7 @@ def shareSDKVersion = "3.6.8";
 dependencies {
 
 
-    compileOnly 'com.fengwuxp.android:mob-ShareSDK:1.0.0-SNAPSHOT@aar'
+    compileOnly 'com.fengwuxp.android:mob-ShareSDK:1.0.+@aar'
 
     compileOnly "com.mob:MobCommons:2019.1205.1718"
     compileOnly "com.mob:MobTools:2019.1205.1732"
