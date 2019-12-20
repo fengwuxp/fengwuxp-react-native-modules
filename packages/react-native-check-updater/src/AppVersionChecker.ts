@@ -45,6 +45,10 @@ export default class AppVersionChecker {
 
         return new Promise((resolve, reject) => {
             this.isNewestVersion().then((data) => {
+                if (data == null) {
+                    reject();
+                    return;
+                }
                 Downloader.show({
                     appVersionInfo: data
                 });

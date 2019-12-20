@@ -53,7 +53,7 @@ export const DownloadDialog = (props: DownloadDialogProps) => {
                 <Text style={styles.dialog_title_text}>{title || "检查更新"}</Text>
             </View>
             <View style={styles.dialog_content}>
-                <Text style={styles.dialog_content_text}>{appVersionInfo.note}</Text>
+                <Text style={styles.dialog_content_text}>{appVersionInfo.note || ""}</Text>
             </View>
             <View style={styles.dialog_buttons}>
                 <Text style={[styles.dialog_button, styles.border_right]}

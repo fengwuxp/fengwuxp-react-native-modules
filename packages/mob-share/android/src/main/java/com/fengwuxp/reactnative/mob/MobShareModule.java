@@ -3,6 +3,7 @@ package com.fengwuxp.reactnative.mob;
 import android.content.Context;
 import android.os.Build;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -17,11 +18,14 @@ import com.fengwuxp.sharesdk.PlatformShareManager;
 import com.fengwuxp.sharesdk.SocialType;
 import com.mob.MobSDK;
 
+import java.text.MessageFormat;
 import java.util.HashMap;
 
 import androidx.annotation.RequiresApi;
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.PlatformActionListener;
+import cn.sharesdk.framework.PlatformDb;
+import cn.sharesdk.framework.ShareSDK;
 
 
 /**
@@ -61,17 +65,38 @@ public class MobShareModule extends ReactContextBaseJavaModule {
     /**
      * 授权
      *
-     * @param platform {@code SocialType}
+     * @param platform      {@code SocialType}
      * @param promise
+     * @param authorizeInfo
      */
     @ReactMethod
-    public void authorize(String platform, Promise promise) {
+    public void authorize(String platform,
+                          String authorizeInfo,
+                          Promise promise) {
         if (TextUtils.isEmpty(platform)) {
             promise.reject(ShareSDKResultStatus.FAILURE.name(), "未指定授权平台");
             return;
         }
-        SocialType shareType = SocialType.valueOf(platform);
-        platformAuthorizeUserInfoManager.doAuthorize(shareType, getCurrentActivity(), new ShareMobPlatformActionListener(promise, false));
+        SocialType socialType = SocialType.valueOf(platform);
+        platformAuthorizeUserInfoManager.doAuthorize(socialType, authorizeInfo,getCurrentActivity(), new ShareMobPlatformActionListener(promise, false));
+    }
+
+    /**
+     * 获取用户信息
+     *
+     * @param platform {@code SocialType}
+     * @param account  可以为空
+     * @param promise
+     */
+    @ReactMethod
+    public void doUserInfo(String platform, String account, Promise promise) {
+        if (TextUtils.isEmpty(platform)) {
+            promise.reject(ShareSDKResultStatus.FAILURE.name(), "未指定授权平台");
+            return;
+        }
+
+        SocialType socialType = SocialType.valueOf(platform);
+        platformAuthorizeUserInfoManager.doUserInfo(socialType, getCurrentActivity(), account, new ShareMobPlatformActionListener(promise, false));
     }
 
     /**
@@ -95,7 +120,7 @@ public class MobShareModule extends ReactContextBaseJavaModule {
         String text = params.getString("text");
         String imageUrl = params.getString("imageUrl");
         String url = params.getString("url");
-        platformShareManager.shareWebPage(shareType, title, text, imageUrl, url, new ShareMobPlatformActionListener(promise, true));
+        platformShareManager.shareWebPage(shareType, title, text, url, imageUrl, new ShareMobPlatformActionListener(promise, true));
 
         ;
     }
@@ -136,12 +161,19 @@ public class MobShareModule extends ReactContextBaseJavaModule {
                 promise.resolve(ShareSDKResultStatus.SUCCESS.name());
             } else {
                 // 授权
+                PlatformDb db = platform.getDb();
+                if (db != null) {
+                    Log.i(NAME, MessageFormat.format("授权结果 PlatformDb：{0}", db.toString()));
+                }
                 WritableMap writableMap = new WritableNativeMap();
-                hashMap.forEach((key, value) -> {
-                    if (value != null) {
-                        writableMap.putString(key, value.toString());
-                    }
-                });
+                if (hashMap != null) {
+                    Log.i(NAME, MessageFormat.format("授权结果 hashMap：{0}", hashMap));
+                    hashMap.forEach((key, value) -> {
+                        if (value != null) {
+                            writableMap.putString(key, value.toString());
+                        }
+                    });
+                }
                 promise.resolve(writableMap);
             }
         }

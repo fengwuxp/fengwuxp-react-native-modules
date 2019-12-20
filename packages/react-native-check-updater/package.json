@@ -28,7 +28,7 @@
     "yarn:install": "yarn install",
     "test": "jest --config ./jest.config.js --verbose=true",
     "rollup:build": "npm run tsc:build && rollup -c && rm -rf ./types-temp",
-    "publish:lib": "run npm:publish"
+    "publish:lib": "npm publish"
   },
   "devDependencies": {
     "@babel/runtime-corejs3": "^7.7.2",
