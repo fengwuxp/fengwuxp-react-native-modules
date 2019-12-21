@@ -1,5 +1,7 @@
 import {SocialType} from "./SocialType";
 
+
+
 export interface MobSDKInterface {
 
     /**
