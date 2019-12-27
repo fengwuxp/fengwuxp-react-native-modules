@@ -1,5 +1,5 @@
 //
-//  MobShareModule.h
+//  MobShareSDK.h
 //  ReactNativeExample
 //
 //  Created by Benjamin on 2019/12/9.
@@ -11,7 +11,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MobShareModule : NSObject<RCTBridgeModule>
+@interface MobShareSDK : NSObject<RCTBridgeModule>
 
 @end
 

@@ -25,6 +25,7 @@ Pod::Spec.new do |s|
   s.ios.dependency 'mob_sharesdk/ShareSDKPlatforms/WeChatFull'  
   s.ios.dependency 'mob_sharesdk/ShareSDKPlatforms/TencentWeibo'
   s.ios.dependency 'mob_sharesdk/ShareSDKExtension'
+  s.ios.dependency 'AlipaySDK-iOS'
   s.dependency "React"
 
 end
