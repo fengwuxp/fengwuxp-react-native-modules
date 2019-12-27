@@ -17,6 +17,7 @@ import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableType;
+import com.facebook.react.bridge.UiThreadUtil;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeArray;
@@ -193,8 +194,9 @@ public class OptionsPicker {
         if (this.selectedOptions != null) {
             this.setSelectedOptions(this.selectedOptions);
         }
-        activity.runOnUiThread(() -> pickerView.show());
+//        activity.runOnUiThread(() -> pickerView.show());
 
+        UiThreadUtil.runOnUiThread(() -> pickerView.show());
     }
 
     void destroy() {

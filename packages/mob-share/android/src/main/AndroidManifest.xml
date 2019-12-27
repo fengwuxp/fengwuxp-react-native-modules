@@ -2,7 +2,7 @@
     package="com.fengwuxp.reactnative.mob">
 
 
-    <application android:label="@string/app_name">
+    <application>
 
     </application>
 

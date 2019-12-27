@@ -1,12 +1,22 @@
 import {SocialType} from "./SocialType";
 
+
+
 export interface MobSDKInterface {
 
     /**
      * 授权
      * @param platform
+     * @param authorizeInfo
      */
-    authorize: (platform: SocialType) => Promise<any>;
+    authorize: (platform: SocialType, authorizeInfo?: string) => Promise<any>;
+
+    /**
+     * 获取用户信息
+     * @param platform
+     * @param account
+     */
+    doUserInfo: (platform: SocialType, account?: string) => Promise<any>
 
     /**
      * 分享
@@ -29,6 +39,16 @@ export interface ShareParams {
     url?: string;
 
     //图片
-    image?: string;
+    imageUrl?: string;
+    imageArray?: string[];
+
+    titleUrl?: string;
+
+    filePath?: string;
+
+    musicUrl?: string;
+
+
+    siteUrl?: string;
 
 }

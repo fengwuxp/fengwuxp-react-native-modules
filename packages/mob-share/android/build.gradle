@@ -3,29 +3,25 @@ def safeExtGet(prop, fallback) {
 }
 
 apply plugin: 'com.android.library'
-//apply plugin: 'maven'
-apply plugin: 'com.mob.sdk'
-
-//group = "com.fengwuxp.reactnative.mob"
-//version = "1.0.0"
 
 buildscript {
     repositories {
-        maven {
-            url "http://mvn.mob.com/android"
-        }
         mavenLocal()
         google()
         jcenter()
         maven() {
             url 'http://repo.codeboot.net/maven/'
         }
-
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.2'
-        classpath 'com.mob.sdk:MobSDK:+'
     }
+}
+
+//不使用缓存，使用仓库中最新的包
+configurations.all {
+    resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds' // 动态版本 x.x.+
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'//  变化版本 x.x.x
 }
 
 android {
@@ -33,7 +29,7 @@ android {
     buildToolsVersion safeExtGet('buildToolsVersion', '28.0.3')
 
     defaultConfig {
-        minSdkVersion safeExtGet('minSdkVersion', 19)
+        minSdkVersion safeExtGet('minSdkVersion', 21)
         targetSdkVersion safeExtGet('targetSdkVersion', 28)
         versionCode 1
         versionName "${version}"
@@ -51,102 +47,53 @@ android {
     }
 }
 
-def MOB_SDK_APP_KEY = safeExtGet('MOB_SDK_APP_KEY', "");
-def MOB_SDK_APP_SECRET = safeExtGet('MOB_SDK_APP_SECRET', "");
-
-// 新浪
-def SINA_WEI_BO_APP_KEY = safeExtGet('SINA_WEI_BO_APP_KEY', "");
-def SINA_WEI_BO_APP_SECRET = safeExtGet('SINA_WEI_BO_APP_SECRET', "");
-def SINA_WEI_BO_APP_CALLBACK_URL = safeExtGet('SINA_WEI_BO_APP_CALLBACK_URL', "http://www.sharesdk.cn");
-def SINA_WEI_BO_APP_SHARE_BY_APP_CLIENT = safeExtGet('SINA_WEI_BO_APP_SHARE_BY_APP_CLIENT', false);
-
-// 微信
-def WE_CHAT_APP_ID = safeExtGet('WE_CHAT_APP_ID', "");
-def WE_CHAT_APP_SECRET = safeExtGet('WE_CHAT_APP_SECRET', "");
-
-// 微信朋友圈
-def WE_CHANT_MOMENTS_APP_ID = "wx4868b35061f87885"
-def WE_CHANT_MOMENTS_APP_SECRET = "64020361b8ec4c99936c0e3999a9f249"
-
-// 微信收藏 Favorite
-def WE_CHANT_FAVORITE_APP_ID = "wx4868b35061f87885"
-def WE_CHANT_FAVORITE_APP_SECRET = "64020361b8ec4c99936c0e3999a9f249"
-
-// QQ
-def QQ_APP_ID = safeExtGet('QQ_APP_ID', "");
-def QQ_APP_EKY = safeExtGet('QQ_APP_EKY', "");
-
-// QQ 空间
-def QQ_ZONE_APP_ID = safeExtGet('QQ_ZONE_APP_ID', "");
-def QQ_ZONE_APP_EKY = safeExtGet('QQ_ZONE_APP_EKY', "");
-
-// 支付宝
-def ALI_PAY_APP_ID = safeExtGet('ALI_PAY_APP_ID', "");
-def ALI_PAY_APP_KEY = safeExtGet('ALI_PAY_APP_KEY', "");
-def ALI_PAY_APP_SECRET = safeExtGet('ALI_PAY_APP_SECRET', "");
-
-MobSDK {
-    appKey MOB_SDK_APP_KEY
-    appSecret MOB_SDK_APP_SECRET
-
-    ShareSDK {
-        //平台配置信息
-        devInfo {
-            Email {
-
-            }
-            SinaWeibo {
-                appKey SINA_WEI_BO_APP_KEY
-                appSecret SINA_WEI_BO_APP_SECRET
-                callbackUri SINA_WEI_BO_APP_CALLBACK_URL
-                shareByAppClient SINA_WEI_BO_APP_SHARE_BY_APP_CLIENT
-            }
-            Wechat {
-                appId WE_CHAT_APP_ID
-                appSecret WE_CHAT_APP_SECRET
-            }
-            WechatFavorite {
-                appId WE_CHANT_FAVORITE_APP_ID
-                appSecret WE_CHANT_FAVORITE_APP_SECRET
-            }
-            WechatMoments {
-                appId WE_CHANT_MOMENTS_APP_ID
-                appSecret WE_CHANT_MOMENTS_APP_SECRET
-            }
-            QQ {
-                appId QQ_APP_ID
-                appKey QQ_APP_EKY
-            }
-            QZone {
-                appId QQ_ZONE_APP_ID
-                appKey QQ_ZONE_APP_EKY
-            }
-            TencentWeibo {
-
-            }
-            AliPay {
-                appId ALI_PAY_APP_ID
-                appKey ALI_PAY_APP_KEY
-                appSecret ALI_PAY_APP_SECRET
-            }
-            YouDao {
-
-            }
-            ShortMessage {
-
-            }
-            Linkedin {
-
-            }
-            Facebook {
-
-            }
+repositories {
+    maven {
+        url "http://mvn.mob.com/android"
+    }
+    maven {
+        url "http://nexus.oaknt.com:18081/repository/maven-public/"
+        credentials {
+            username = "anonymous"
+            password = ""
         }
+    }
+    mavenLocal()
+    google()
+    jcenter()
+    maven() {
+        url 'http://repo.codeboot.net/maven/'
     }
 
 }
 
+
+def shareSDKVersion = "3.6.8";
+
 dependencies {
+
+
+    compileOnly 'com.fengwuxp.android:mob-ShareSDK:1.0.+@aar'
+
+    compileOnly "com.mob:MobCommons:2019.1205.1718"
+    compileOnly "com.mob:MobTools:2019.1205.1732"
+    compileOnly "cn.sharesdk:ShareSDK:${shareSDKVersion}@aar"
+    compileOnly "cn.sharesdk:ShareSDK-Wechat:${shareSDKVersion}"
+    compileOnly "cn.sharesdk:ShareSDK-Wechat-Core:${shareSDKVersion}"
+    compileOnly "cn.sharesdk:ShareSDK-Wechat-Favorite:${shareSDKVersion}"
+    compileOnly "cn.sharesdk:ShareSDK-Wechat-Moments:${shareSDKVersion}"
+    compileOnly "cn.sharesdk:ShareSDK-QQ:${shareSDKVersion}"
+    compileOnly "cn.sharesdk:ShareSDK-QQ-Core:${shareSDKVersion}"
+    compileOnly "cn.sharesdk:ShareSDK-QZone:${shareSDKVersion}"
+    compileOnly "cn.sharesdk:ShareSDK-TencentWeibo:${shareSDKVersion}"
+    compileOnly "cn.sharesdk:ShareSDK-Email:${shareSDKVersion}"
+    compileOnly "cn.sharesdk:ShareSDK-ShortMessage:${shareSDKVersion}"
+    compileOnly "cn.sharesdk:ShareSDK-Alipay:${shareSDKVersion}"
+    compileOnly "cn.sharesdk:ShareSDK-Alipay-Core:${shareSDKVersion}"
+    compileOnly "cn.sharesdk:ShareSDK-Alipay-Moments:${shareSDKVersion}"
+    compileOnly "cn.sharesdk:ShareSDK-SinaWeibo:${shareSDKVersion}"
+    compileOnly "cn.sharesdk:ShareSDK-SinaWeibo:${shareSDKVersion}"
+
     compileOnly 'com.facebook.react:react-native:+'
 }
 

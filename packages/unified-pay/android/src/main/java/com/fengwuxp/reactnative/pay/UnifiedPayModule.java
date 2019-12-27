@@ -22,6 +22,7 @@ import com.xgr.wechatpay.wxpay.WXPayInfoImpli;
  */
 public class UnifiedPayModule extends ReactContextBaseJavaModule {
 
+    private static final String NAME = "UnifiedPay";
 
     private ReactApplicationContext reactContext;
 
@@ -33,7 +34,7 @@ public class UnifiedPayModule extends ReactContextBaseJavaModule {
 
     @Override
     public String getName() {
-        return "UnifiedPay";
+        return NAME;
     }
 
     @Override

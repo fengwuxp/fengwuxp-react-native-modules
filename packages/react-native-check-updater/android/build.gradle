@@ -3,23 +3,25 @@ def safeExtGet(prop, fallback) {
 }
 
 apply plugin: 'com.android.library'
-//apply plugin: 'maven'
+apply plugin: 'maven'
 
 
 buildscript {
     repositories {
+
         mavenLocal()
         google()
         jcenter()
         maven() {
             url 'http://repo.codeboot.net/maven/'
         }
-
     }
+
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.3'
+        classpath 'com.android.tools.build:gradle:3.5.2'
     }
 }
+
 repositories {
     mavenLocal()
     google()
@@ -27,14 +29,15 @@ repositories {
     maven() {
         url 'http://repo.codeboot.net/maven/'
     }
-
+    maven { url 'https://jitpack.io' }
 }
+
 android {
     compileSdkVersion safeExtGet('compileSdkVersion', 28)
     buildToolsVersion safeExtGet('buildToolsVersion', '28.0.3')
 
     defaultConfig {
-        minSdkVersion safeExtGet('minSdkVersion', 19)
+        minSdkVersion safeExtGet('minSdkVersion', 21)
         targetSdkVersion safeExtGet('targetSdkVersion', 28)
         versionCode 1
         versionName "${version}"
@@ -53,11 +56,8 @@ android {
 }
 
 dependencies {
+
+
     compileOnly 'com.facebook.react:react-native:+'
-    api 'com.contrarywind:Android-PickerView:4.1.9'
-
-//    api 'io.reactivex.rxjava2:rxjava:2.2.15'
-//    api 'io.reactivex.rxjava2:rxandroid:2.1.1'
-
 }
 

@@ -1,7 +1,6 @@
 package com.fengwuxp.reactnative.pickerview;
 
 import com.contrarywind.interfaces.IPickerViewData;
-import com.facebook.react.bridge.Dynamic;
 import com.facebook.react.bridge.ReadableMap;
 
 import java.util.Objects;
