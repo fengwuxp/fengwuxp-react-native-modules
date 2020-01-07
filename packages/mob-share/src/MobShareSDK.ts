@@ -1,7 +1,6 @@
 import {SocialType} from "./SocialType";
 
 
-
 export interface MobSDKInterface {
 
     /**
@@ -24,6 +23,11 @@ export interface MobSDKInterface {
      * @param shareParams  分享的参数
      */
     share: (platform: SocialType, shareParams: ShareParams) => Promise<void>;
+
+    /**
+     * 初始化 only ios
+     */
+    setup: () => Promise<void>;
 }
 
 
