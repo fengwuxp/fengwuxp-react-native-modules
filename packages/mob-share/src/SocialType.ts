@@ -32,6 +32,11 @@ export enum SocialType {
     QQ_ZONE = "QQ_ZONE",
 
     /**
+     * 腾讯微博
+     */
+    TENCENT_WEB_BO = "TENCENT_WEB_BO",
+
+    /**
      * 短信
      */
     SHORT_MESSAGE = "SHORT_MESSAGE",
@@ -46,10 +51,7 @@ export enum SocialType {
      */
     SINA_WEI_BO = "SINA_WEI_BO",
 
-    /**
-     * 腾讯微博
-     */
-    TENCENT_WEB_BO = "TENCENT_WEB_BO",
+
 
     /**
      * 扫码

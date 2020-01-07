@@ -2,6 +2,7 @@ import {NativeModules, Linking, Platform} from 'react-native';
 import {MobSDKInterface, ShareParams} from "./MobShareSDK";
 import {SocialType} from "./SocialType";
 import {SOCIAL_TYPE_MAP_APP_SCHEME} from "./AppURLSchemeConstant";
+import {MobShareSdkIosConstantValue} from "./MobShareSdkIosConstantValue";
 
 const IS_IOS = Platform.OS === 'ios';
 let initShareSdk = false;
@@ -49,6 +50,10 @@ const MobShareModule: MobShareModuleInterface = {
             if (!isInstall) {
                 return Promise.reject({message: "应用未安装"});
             }
+            if (IS_IOS) {
+                sharePlatformType = MobShareSdkIosConstantValue[sharePlatformType].toString();
+            }
+
             return MobShareSDK.share(sharePlatformType, shareParams);
         })
 
