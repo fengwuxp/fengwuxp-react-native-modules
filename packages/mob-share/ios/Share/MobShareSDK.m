@@ -54,7 +54,7 @@ RCT_EXPORT_METHOD(setup) {
     [platformsRegister setupQQWithAppId:configure.QQId appkey:configure.QQKey];
 
     //微信
-    [platformsRegister setupWeChatWithAppId:configure.WXId appSecret:configure.wxSecret universalLink:@""];
+    [platformsRegister setupWeChatWithAppId:configure.WXId appSecret:configure.wxSecret universalLink:@"https://pro.elianfu.com/ylfkj/news/"];
 
     //新浪
     [platformsRegister setupSinaWeiboWithAppkey:configure.SinaId appSecret:configure.SinaSecret redirectUrl:@""];
@@ -113,8 +113,8 @@ RCT_EXPORT_METHOD(share:(NSString *)platform param:(NSDictionary *)param  resolv
   rejectBlock = reject;
   NSMutableDictionary *params = [NSMutableDictionary dictionary];
   [params SSDKSetupShareParamsByText:param[@"text"]
-                              images:param[@"img"]
-                                 url:param[@"url"]
+                              images:@[param[@"imageUrl"]]
+                                 url:[NSURL URLWithString:param[@"url"]]
                                title:param[@"title"]
                                 type:SSDKContentTypeAuto];
 
