@@ -27,6 +27,7 @@
     "./src/**/*",
     "./test/**/*",
     "./types/**/*.d.ts",
+    "./typings.d.ts",
     "node_modules/**/*/types/**/*.d.ts"
   ],
   "exclude": [

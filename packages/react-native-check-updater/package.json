@@ -26,23 +26,27 @@
   "license": "MIT",
   "scripts": {
     "yarn:install": "yarn install",
+    "npm:publish": "npm publish",
+    "tsc:build": "rm -rf ./types && tsc -p ./tsconfig.lib.json --emitDeclarationOnly",
     "test": "jest --config ./jest.config.js --verbose=true",
     "rollup:build": "npm run tsc:build && rollup -c && rm -rf ./types-temp",
-    "publish:lib": "npm publish"
+    "publish:lib": "npm run rollup:build && npm run npm:publish"
   },
   "devDependencies": {
+    "@types/react-native": "^0.60.24",
     "@babel/runtime-corejs3": "^7.7.2",
     "fengwuxp-library-starter": "^1.0.0",
     "fengwuxp-styles-dependency": "^1.0.0",
     "react": "^16.12.0",
     "react-native": "^0.61.4",
     "tslib": "^1.10.0",
-    "typescript": "^3.7.2"
+    "typescript": "^3.7.2",
+    "rollup-plugin-dts": "1.2.1",
+    "rollup-plugin-typescript2": "^0.26.0"
   },
   "dependencies": {
     "@types/react-native": "^0.60.24",
     "fengwuxp-common-utils": "^1.0.0",
-    "fengwuxp-react-native-mob-share": "^1.0.0",
     "fengwuxp-react-native-starter": "^1.0.0",
     "react-native-device-info": "^5.4.0",
     "react-native-fs": "^2.16.2",

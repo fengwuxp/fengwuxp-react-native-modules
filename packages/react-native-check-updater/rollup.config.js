@@ -102,8 +102,6 @@ const getConfig = (isProd) => {
 
 
 export default [
-    getConfig(false),
-    getConfig(true),
     {
         input: "./types-temp/index.d.ts",
         output: {
